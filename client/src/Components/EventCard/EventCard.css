@@ -187,16 +187,64 @@ grid-template-columns:repeat(2,1fr);
 
 @media(max-width:768px){
 
-.events-grid{
-
-grid-template-columns:1fr;
-
+.events-section{
+    padding:60px 0;
 }
 
-.events-section{
+.events-grid{
+    grid-template-columns:1fr;
+    gap:18px;
+    padding:0 18px;
+}
 
-padding:80px 0;
+.event-card{
+    border-radius:16px;
+}
 
+.event-content{
+    padding:20px 18px;
+}
+
+.location{
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.event-content h3{
+    font-size:20px;
+    margin-bottom:10px;
+}
+
+.event-content p{
+    font-size:14px;
+    line-height:1.6;
+    margin-bottom:18px;
+}
+
+.event-content button{
+    font-size:15px;
+    gap:6px;
+}
+
+/* Agar future me image use karoge to ye bhi responsive rahega */
+.event-image img{
+    height:200px;
+}
+
+.event-date{
+    width:60px;
+    height:60px;
+    border-radius:12px;
+    top:12px;
+    left:12px;
+}
+
+.event-date h3{
+    font-size:22px;
+}
+
+.event-date span{
+    font-size:11px;
 }
 
 }

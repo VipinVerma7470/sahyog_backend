@@ -1,59 +1,80 @@
-.admin-layout{
-    display:flex;
-    min-height:100vh;
-    background:#F6F8FB;
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #F6F8FB;
 }
 
-.admin-content{
-    flex:1;
-    margin-left:270px;
-    transition:.35s;
+/* ===============================
+   Main Content
+================================ */
+
+.admin-content {
+    flex: 1;
+    margin-left: 270px;
+    transition: 0.35s;
+    min-width: 0;
 }
 
-.dashboard-body{
-    padding:110px 30px 30px;
-    min-height:100vh;
+/* ===============================
+   Dashboard Body
+================================ */
+
+.dashboard-body {
+   padding: 0 30px 30px;
+    min-height: 100vh;
 }
 
-.mobile-sidebar{
-    display:none;
+/* ===============================
+   Mobile Sidebar
+================================ */
+
+.mobile-sidebar {
+    display: none;
 }
 
-@media(max-width:992px){
+/* ===============================
+   Tablet / Mobile
+================================ */
 
-.admin-content{
-    margin-left:0;
+@media (max-width: 992px) {
+
+    .admin-content {
+        margin-left: 0;
+    }
+
+    .mobile-sidebar {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 270px;
+        height: 100vh;
+        z-index: 9999;
+        transition: 0.35s;
+    }
+
+    .mobile-sidebar.show {
+        left: 0;
+    }
+
+    .dashboard-body {
+        padding: 85px 20px 20px;
+    }
+
 }
 
-.mobile-sidebar{
-    display:block;
-    position:fixed;
-    top:0;
-    left:-100%;
-    width:270px;
-    height:100vh;
-    z-index:9999;
-    transition:.35s;
-}
+/* ===============================
+   Small Mobile
+================================ */
 
-.mobile-sidebar.show{
-    left:0;
-}
+@media (max-width: 576px) {
 
-.dashboard-body{
-    padding:95px 20px 20px;
-}
+    .dashboard-body {
+        padding: 80px 15px 15px;
+    }
 
-}
-
-@media(max-width:576px){
-
-.dashboard-body{
-    padding:90px 15px 15px;
-}
-
-.mobile-sidebar{
-    width:100%;
-}
+    .mobile-sidebar {
+        width: 100%;
+    }
 
 }

@@ -1,15 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
 
-body{
-font-family:'Poppins',sans-serif;
-padding-top:122px;
-}
 
 /*=========================
 TOP BAR
@@ -284,6 +275,52 @@ cursor:pointer;
 /*=========================
 RESPONSIVE
 ==========================*/
+@media (max-width:1200px){
+
+.navbar{
+    padding:0 35px;
+}
+
+.nav-links{
+    gap:20px;
+}
+
+.nav-links a{
+    font-size:15px;
+}
+
+.logo img{
+    width:65px;
+    height:65px;
+}
+
+.logo-text h3{
+    font-size:24px;
+}
+
+.logo-text span{
+    font-size:12px;
+}
+
+.donate-btnn{
+    padding:11px 18px;
+    font-size:14px;
+}
+
+.topba{
+    padding:0 35px;
+}
+
+.topbar-lef{
+    gap:15px;
+    font-size:13px;
+}
+
+.topbar-righ{
+    gap:14px;
+}
+
+}
 
 @media(max-width:992px){
 
@@ -293,11 +330,7 @@ display:none;
 
 }
 
-body{
 
-padding-top:82px;
-
-}
 
 .navbar-wrapper{
 

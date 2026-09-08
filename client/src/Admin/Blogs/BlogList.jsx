@@ -1,58 +1,138 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Blog.css";
-import { FaPlus, FaEdit, FaTrash, FaSearch } from "react-icons/fa";
-
-const blogData = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500",
-    title: "Education Changes Lives",
-    category: "Education",
-    date: "16 Jul 2026",
-    author: "Admin",
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=500",
-    title: "Health Awareness Camp",
-    category: "Health",
-    date: "14 Jul 2026",
-    author: "Admin",
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500",
-    title: "Tree Plantation Drive",
-    category: "Environment",
-    date: "10 Jul 2026",
-    author: "Admin",
-  },
-];
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaSearch,
+} from "react-icons/fa";
+import axios from "axios";
 
 const BlogList = () => {
-
+  const [blogs, setBlogs] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const filteredBlogs = blogData.filter((blog) =>
-    blog.title.toLowerCase().includes(search.toLowerCase())
+  // ===============================
+  // Fetch Blogs
+  // ===============================
+
+  const fetchBlogs = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(
+        "http://localhost:5000/api/blogs",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setBlogs(response.data.blogs || []);
+
+    } catch (error) {
+      console.error(
+        "Fetch Blogs Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to fetch blogs"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
+
+  // ===============================
+  // Delete Blog
+  // ===============================
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this blog?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.delete(
+        `http://localhost:5000/api/blogs/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message);
+
+      // UI se immediately remove
+      setBlogs((prevBlogs) =>
+        prevBlogs.filter(
+          (blog) => blog._id !== id
+        )
+      );
+
+    } catch (error) {
+      console.error(
+        "Delete Blog Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete blog"
+      );
+    }
+  };
+
+  // ===============================
+  // Search Blogs
+  // ===============================
+
+  const filteredBlogs = blogs.filter(
+    (blog) =>
+      `${blog.title} ${blog.category} ${blog.author}`
+        .toLowerCase()
+        .includes(search.toLowerCase())
   );
 
   return (
-
     <div className="blog-admin-page">
+
+      {/* Header */}
 
       <div className="blog-admin-header">
 
         <div>
 
-          <h2>Blog Management</h2>
+          <h2>
+            Blog Management
+          </h2>
 
-          <p>Manage all blogs from one place.</p>
+          <p>
+            Manage all blogs from one place.
+          </p>
 
         </div>
 
-        <Link to="/admin/blogs/add" className="add-blog-btn">
+        <Link
+          to="/admin/blogs/add"
+          className="add-blog-btn"
+        >
 
           <FaPlus />
 
@@ -62,98 +142,162 @@ const BlogList = () => {
 
       </div>
 
+      {/* Search */}
+
       <div className="blog-search">
 
-        <FaSearch className="search-icon" />
+        <FaSearch
+          className="search-icon"
+        />
 
         <input
           type="text"
           placeholder="Search Blog..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
         />
 
       </div>
 
-      <div className="blog-table-wrapper">
+      {/* Loading */}
 
-        <table className="blog-table">
+      {loading ? (
 
-          <thead>
+        <p>
+          Loading blogs...
+        </p>
 
-            <tr>
+      ) : filteredBlogs.length === 0 ? (
 
-              <th>Image</th>
+        <p>
+          No blogs found.
+        </p>
 
-              <th>Title</th>
+      ) : (
 
-              <th>Category</th>
+        <div className="blog-table-wrapper">
 
-              <th>Date</th>
+          <table className="blog-table">
 
-              <th>Author</th>
+            <thead>
 
-              <th>Action</th>
+              <tr>
 
-            </tr>
+                <th>
+                  Image
+                </th>
 
-          </thead>
+                <th>
+                  Title
+                </th>
 
-          <tbody>
+                <th>
+                  Category
+                </th>
 
-            {filteredBlogs.map((blog) => (
+                <th>
+                  Date
+                </th>
 
-              <tr key={blog.id}>
+                <th>
+                  Author
+                </th>
 
-                <td>
-
-                  <img
-                    src={blog.image}
-                    alt={blog.title}
-                    className="blog-thumb"
-                  />
-
-                </td>
-
-                <td>{blog.title}</td>
-
-                <td>{blog.category}</td>
-
-                <td>{blog.date}</td>
-
-                <td>{blog.author}</td>
-
-                <td>
-
-                  <Link
-                    to={`/admin/blogs/edit/${blog.id}`}
-                    className="edit-btn"
-                  >
-                    <FaEdit />
-                  </Link>
-
-                  <button className="delete-btn">
-
-                    <FaTrash />
-
-                  </button>
-
-                </td>
+                <th>
+                  Action
+                </th>
 
               </tr>
 
-            ))}
+            </thead>
 
-          </tbody>
+            <tbody>
 
-        </table>
+              {filteredBlogs.map(
+                (blog) => (
 
-      </div>
+                  <tr
+                    key={blog._id}
+                  >
+
+                    <td>
+
+                      <img
+                        src={blog.image}
+                        alt={blog.title}
+                        className="blog-thumb"
+                      />
+
+                    </td>
+
+                    <td>
+                      {blog.title}
+                    </td>
+
+                    <td>
+                      {blog.category}
+                    </td>
+
+                    <td>
+                      {new Date(
+                        blog.createdAt
+                      ).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
+                    </td>
+
+                    <td>
+                      {blog.author}
+                    </td>
+
+                    <td>
+
+                      <Link
+                        to={`/admin/blogs/edit/${blog._id}`}
+                        className="edit-btn"
+                      >
+
+                        <FaEdit />
+
+                      </Link>
+
+                      <button
+                        className="delete-btn"
+                        onClick={() =>
+                          handleDelete(
+                            blog._id
+                          )
+                        }
+                      >
+
+                        <FaTrash />
+
+                      </button>
+
+                    </td>
+
+                  </tr>
+
+                )
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      )}
 
     </div>
-
   );
-
 };
 
 export default BlogList;

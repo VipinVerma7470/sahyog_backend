@@ -1,7 +1,9 @@
 import { useState } from "react";
+import axios from "axios";
 import "./ProgramsAdmin.css";
 
 const AddProgram = () => {
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -11,49 +13,85 @@ const AddProgram = () => {
   });
 
   const handleChange = (e) => {
-
     const { name, value } = e.target;
 
     setFormData({
       ...formData,
       [name]: value,
     });
-
   };
 
   const handleImage = (e) => {
-
     setFormData({
       ...formData,
       image: e.target.files[0],
     });
-
   };
 
-  const handleSubmit = (e) => {
-
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    try {
+      setLoading(true);
 
-    alert("Program Added Successfully");
+      const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
 
+      const data = new FormData();
+
+      data.append("title", formData.title);
+      data.append("category", formData.category);
+      data.append("description", formData.description);
+
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      const response = await axios.post(
+        "http://localhost:5000/api/programs",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message);
+
+      setFormData({
+        title: "",
+        category: "",
+        description: "",
+        image: null,
+      });
+
+      // File input reset
+      document.querySelector('input[type="file"]').value = "";
+
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to add program"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-
     <div className="admin-page">
-
       <h2>Add Program</h2>
 
       <form
         className="admin-form"
         onSubmit={handleSubmit}
-      >        <div className="form-group">
-
-          <label>
-            Program Name
-          </label>
+      >
+        <div className="form-group">
+          <label>Program Name</label>
 
           <input
             type="text"
@@ -63,14 +101,10 @@ const AddProgram = () => {
             onChange={handleChange}
             required
           />
-
         </div>
 
         <div className="form-group">
-
-          <label>
-            Category
-          </label>
+          <label>Category</label>
 
           <select
             name="category"
@@ -78,7 +112,6 @@ const AddProgram = () => {
             onChange={handleChange}
             required
           >
-
             <option value="">
               Select Category
             </option>
@@ -102,16 +135,11 @@ const AddProgram = () => {
             <option value="Skill Development">
               Skill Development
             </option>
-
           </select>
-
         </div>
 
         <div className="form-group">
-
-          <label>
-            Description
-          </label>
+          <label>Description</label>
 
           <textarea
             rows="6"
@@ -121,35 +149,31 @@ const AddProgram = () => {
             onChange={handleChange}
             required
           />
-
         </div>
-                <div className="form-group">
 
-          <label>
-            Upload Image
-          </label>
+        <div className="form-group">
+          <label>Upload Image</label>
 
           <input
             type="file"
             accept="image/*"
             onChange={handleImage}
+            required
           />
-
         </div>
 
         <button
           className="save-btn"
           type="submit"
+          disabled={loading}
         >
-          Save Program
+          {loading
+            ? "Saving..."
+            : "Save Program"}
         </button>
-
       </form>
-
     </div>
-
   );
-
 };
 
 export default AddProgram;

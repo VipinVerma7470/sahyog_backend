@@ -1,50 +1,108 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Blog.css";
+import axios from "axios";
 
 const AddBlog = () => {
+  const navigate = useNavigate();
 
   const [blog, setBlog] = useState({
     title: "",
     category: "",
     author: "",
-    image: "",
-    shortDescription: "",
-    description: "",
+      tags: "",
+    content: "",
   });
 
-  const handleChange = (e) => {
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // ===============================
+  // Handle Text Change
+  // ===============================
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setBlog({
-      ...blog,
+    setBlog((prev) => ({
+      ...prev,
       [name]: value,
-    });
-
+    }));
   };
+
+  // ===============================
+  // Handle Image
+  // ===============================
 
   const handleImage = (e) => {
+    const file = e.target.files[0];
 
-    setBlog({
-      ...blog,
-      image: URL.createObjectURL(e.target.files[0]),
-    });
-
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
-  const handleSubmit = (e) => {
+  // ===============================
+  // Submit Blog
+  // ===============================
 
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(blog);
+    if (!image) {
+      alert("Please upload a blog image");
+      return;
+    }
 
-    alert("Blog Added Successfully");
+    try {
+      setLoading(true);
 
+      const formData = new FormData();
+
+      formData.append("title", blog.title);
+      formData.append("category", blog.category);
+      formData.append("author", blog.author);
+      formData.append("tags", blog.tags);
+      formData.append("content", blog.content);
+
+      // Backend expects "image"
+      formData.append("image", image);
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:5000/api/blogs",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message);
+
+      // Successful add ke baad list page
+      navigate("/admin/blogs");
+
+    } catch (error) {
+      console.error(
+        "Add Blog Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to add blog"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-
     <div className="blog-form-page">
 
       <div className="form-header">
@@ -53,11 +111,16 @@ const AddBlog = () => {
 
           <h2>Add New Blog</h2>
 
-          <p>Create a new blog for your website.</p>
+          <p>
+            Create a new blog for your website.
+          </p>
 
         </div>
 
-        <Link to="/admin/blogs" className="back-btn">
+        <Link
+          to="/admin/blogs"
+          className="back-btn"
+        >
           Back
         </Link>
 
@@ -70,9 +133,13 @@ const AddBlog = () => {
 
         <div className="form-grid">
 
+          {/* Title */}
+
           <div className="form-group">
 
-            <label>Blog Title</label>
+            <label>
+              Blog Title
+            </label>
 
             <input
               type="text"
@@ -85,9 +152,13 @@ const AddBlog = () => {
 
           </div>
 
+          {/* Category */}
+
           <div className="form-group">
 
-            <label>Category</label>
+            <label>
+              Category
+            </label>
 
             <select
               name="category"
@@ -96,25 +167,56 @@ const AddBlog = () => {
               required
             >
 
-              <option value="">Select Category</option>
+              <option value="">
+                Select Category
+              </option>
 
-              <option>Education</option>
+              <option value="Education">
+                Education
+              </option>
 
-              <option>Health</option>
+              <option value="Health">
+                Health
+              </option>
 
-              <option>Environment</option>
+              <option value="Environment">
+                Environment
+              </option>
 
-              <option>Women Empowerment</option>
+              <option value="Women Empowerment">
+                Women Empowerment
+              </option>
 
-              <option>Social Work</option>
+              <option value="Social Work">
+                Social Work
+              </option>
 
             </select>
 
           </div>
 
+          {/* Tags */}
+<div className="form-group">
+  <label>Tags</label>
+  <input
+    type="text"
+    name="tags"
+    placeholder="e.g. education, children, donation, ngo"
+    value={blog.tags}
+    onChange={handleChange}
+  />
+  <small className="input-hint">
+    Separate tags with commas.
+  </small>
+</div>
+
+          {/* Author */}
+
           <div className="form-group">
 
-            <label>Author Name</label>
+            <label>
+              Author Name
+            </label>
 
             <input
               type="text"
@@ -127,70 +229,73 @@ const AddBlog = () => {
 
           </div>
 
+          {/* Image */}
+
           <div className="form-group">
 
-            <label>Upload Image</label>
+            <label>
+              Upload Image
+            </label>
 
             <input
               type="file"
               accept="image/*"
               onChange={handleImage}
+              required
             />
 
           </div>
 
         </div>
 
-        {blog.image && (
+        {/* Image Preview */}
+
+        {imagePreview && (
 
           <div className="image-preview">
 
             <img
-              src={blog.image}
-              alt="Preview"
+              src={imagePreview}
+              alt="Blog Preview"
             />
 
           </div>
 
         )}
 
-        <div className="form-group">
-
-          <label>Short Description</label>
-
-          <textarea
-            rows="3"
-            name="shortDescription"
-            placeholder="Write Short Description..."
-            value={blog.shortDescription}
-            onChange={handleChange}
-            required
-          />
-
-        </div>
+        {/* Blog Content */}
 
         <div className="form-group">
 
-          <label>Full Blog Description</label>
+          <label>
+            Full Blog Content
+          </label>
 
           <textarea
-            rows="8"
-            name="description"
+            rows="10"
+            name="content"
             placeholder="Write Complete Blog..."
-            value={blog.description}
+            value={blog.content}
             onChange={handleChange}
             required
           />
 
         </div>
+
+        {/* Buttons */}
 
         <div className="form-buttons">
 
           <button
             type="submit"
             className="save-btn"
+            disabled={loading}
           >
-            Publish Blog
+
+            {loading
+              ? "Publishing..."
+              : "Publish Blog"}
+
           </button>
 
           <Link
@@ -205,9 +310,7 @@ const AddBlog = () => {
       </form>
 
     </div>
-
   );
-
 };
 
 export default AddBlog;

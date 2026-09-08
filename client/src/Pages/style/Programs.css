@@ -69,11 +69,12 @@
 
 .program-tabs{
     display:flex;
-    justify-content:center;
     gap:15px;
-    flex-wrap:wrap;
+    justify-content:center;
     margin-bottom:45px;
 }
+
+
 
 .program-tabs button{
     border:none;
@@ -199,16 +200,22 @@ grid-template-columns:1fr;
 }
 
 .program-tabs{
-justify-content:flex-start;
-overflow-x:auto;
+    justify-content:flex-start;
+    overflow-x:auto;
+    flex-wrap:nowrap;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+    padding:0 15px;
 }
 
 .program-tabs::-webkit-scrollbar{
-display:none;
+    display:none;
 }
 
 .program-tabs button{
-white-space:nowrap;
+    flex:0 0 auto;
+    white-space:nowrap;
 }
+
 
 }

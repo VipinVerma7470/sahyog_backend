@@ -72,7 +72,7 @@ Filter Buttons
     justify-content:center;
     gap:15px;
     margin-bottom:45px;
-    flex-wrap:wrap;
+    /* flex-wrap:wrap; */
 }
 
 .gallery-filter button{
@@ -238,7 +238,9 @@ Responsive
 .gallery-filter{
     justify-content:flex-start;
     overflow-x:auto;
-    padding-bottom:10px;
+    padding:0 15px 10px;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
 }
 
 .gallery-filter::-webkit-scrollbar{
@@ -247,6 +249,7 @@ Responsive
 
 .gallery-filter button{
     white-space:nowrap;
+    flex:0 0 auto;
 }
 
 }

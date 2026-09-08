@@ -23,20 +23,21 @@ const programData = [
     desc: "Organizing free health camps, medical awareness and healthcare support for rural communities.",
     color: "#1E88E5",
   },
-  {
+   {
     id: 3,
-    icon: <FaFemale />,
-    title: "Women Empowerment",
-    desc: "Helping women through skill development, entrepreneurship and self-employment programs.",
-    color: "#EC407A",
-  },
-  {
-    id: 4,
     icon: <FaTree />,
     title: "Environment",
     desc: "Tree plantation drives, awareness campaigns and sustainable environmental initiatives.",
     color: "#66BB6A",
   },
+  {
+    id: 4,
+    icon: <FaFemale />,
+    title: "Women Empowerment",
+    desc: "Helping women through skill development, entrepreneurship and self-employment programs.",
+    color: "#EC407A",
+  },
+ 
 ];
 
 const Programs = () => {

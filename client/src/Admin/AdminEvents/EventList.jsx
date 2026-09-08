@@ -1,159 +1,300 @@
 import "./EventsAdmin.css";
-import { Link } from "react-router-dom";
-import { FaPlus, FaSearch } from "react-icons/fa";
+import {Link} from "react-router-dom";
+import {FaPlus,FaSearch} from "react-icons/fa";
+import {useEffect,useState} from "react";
+import axios from "axios";
 
-const events = [
 
-  {
-    id:1,
-    title:"Education Camp",
-    location:"Indore",
-    date:"12 Jul 2026",
-    status:"Upcoming"
-  },
+const EventList=()=>{
 
-  {
-    id:2,
-    title:"Blood Donation",
-    location:"Bhopal",
-    date:"20 Jul 2026",
-    status:"Upcoming"
-  },
 
-  {
-    id:3,
-    title:"Tree Plantation",
-    location:"Ujjain",
-    date:"05 Aug 2026",
-    status:"Completed"
-  }
+const [events,setEvents]=useState([]);
 
-];
+const [search,setSearch]=useState("");
 
-const EventList = () => {
 
-  return (
 
-    <div className="admin-page">
 
-      <div className="page-header">
+useEffect(()=>{
 
-        <div>
+fetchEvents();
 
-          <h2>Manage Events</h2>
+},[]);
 
-          <p>
-            Add, Update and Delete NGO Events
-          </p>
 
-        </div>
 
-        <Link
-          to="/admin/events/add"
-          className="add-btn"
-        >
 
-          <FaPlus />
+const fetchEvents=async()=>{
 
-          Add Event
+try{
 
-        </Link>
+const res=await axios.get(
+"http://localhost:5000/api/events"
+);
 
-      </div>
 
-      <div className="toolbar">
+setEvents(res.data.events);
 
-        <div className="search-box">
 
-          <FaSearch />
+}catch(error){
 
-          <input
-            type="text"
-            placeholder="Search Event..."
-          />
+console.log(error);
 
-        </div>
+}
 
-      </div>
-            <table className="admin-table">
-
-        <thead>
-
-          <tr>
-
-            <th>Title</th>
-
-            <th>Location</th>
-
-            <th>Date</th>
-
-            <th>Status</th>
-
-            <th>Action</th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {events.map((item)=>(
-
-            <tr key={item.id}>
-
-              <td>{item.title}</td>
-
-              <td>{item.location}</td>
-
-              <td>{item.date}</td>
-
-              <td>
-
-                <span
-                  className={
-                    item.status==="Upcoming"
-                    ? "status upcoming"
-                    : "status completed"
-                  }
-                >
-
-                  {item.status}
-
-                </span>
-
-              </td>
-
-              <td>
-
-                <Link
-                  to={`/admin/events/edit/${item.id}`}
-                  className="edit-btn"
-                >
-
-                  Edit
-
-                </Link>
-
-                <button className="delete-btn">
-
-                  Delete
-
-                </button>
-
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
-
-    </div>
-
-  );
 
 };
+
+
+
+
+const deleteEvent=async(id)=>{
+
+
+if(!window.confirm("Delete Event?"))
+return;
+
+
+try{
+
+
+const token=localStorage.getItem("token");
+
+
+await axios.delete(
+
+`http://localhost:5000/api/events/${id}`,
+
+{
+
+headers:{
+Authorization:`Bearer ${token}`
+}
+
+}
+
+);
+
+
+
+alert("Event Deleted");
+
+
+fetchEvents();
+
+
+
+}catch(error){
+
+console.log(error);
+
+}
+
+
+};
+
+
+
+
+const filteredEvents=events.filter(item=>
+
+item.title
+.toLowerCase()
+.includes(search.toLowerCase())
+
+);
+
+
+
+
+return(
+
+<div className="admin-page">
+
+
+<div className="page-header">
+
+<div>
+
+<h2>Manage Events</h2>
+
+<p>Add Update Delete Events</p>
+
+</div>
+
+
+<Link
+to="/admin/events/add"
+className="add-btn"
+>
+
+<FaPlus/>
+Add Event
+
+</Link>
+
+
+</div>
+
+
+
+<div className="toolbar">
+
+
+<div className="search-box">
+
+<FaSearch/>
+
+<input
+
+placeholder="Search Event..."
+
+value={search}
+
+onChange={(e)=>setSearch(e.target.value)}
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<table className="admin-table">
+
+
+<thead>
+
+<tr>
+<th>Image</th>
+<th>Title</th>
+<th>Location</th>
+<th>Date</th>
+<th>Status</th>
+<th>Action</th>
+
+
+</tr>
+
+</thead>
+
+
+
+<tbody>
+
+
+{
+
+filteredEvents.map(item=>(
+
+
+<tr key={item._id}>
+<td>
+  {item.image ? (
+    <img
+      src={item.image}
+      alt={item.title}
+      className="event-thumb"
+    />
+  ) : (
+    <span className="no-image">
+      No Image
+    </span>
+  )}
+</td>
+
+<td>{item.title}</td>
+
+
+<td>{item.location}</td>
+
+
+<td>
+
+{
+new Date(item.date)
+.toLocaleDateString()
+}
+
+</td>
+
+
+
+<td>
+
+<span
+className={
+item.status==="Upcoming"
+?"status upcoming"
+:"status completed"
+}
+>
+
+{item.status}
+
+</span>
+
+
+</td>
+
+
+
+<td>
+
+
+<Link
+
+to={`/admin/events/edit/${item._id}`}
+
+className="edit-btn"
+
+>
+
+Edit
+
+</Link>
+
+
+
+<button
+
+className="delete-btn"
+
+onClick={()=>deleteEvent(item._id)}
+
+>
+
+Delete
+
+</button>
+
+
+</td>
+
+
+</tr>
+
+
+))
+
+}
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+)
+
+}
+
 
 export default EventList;

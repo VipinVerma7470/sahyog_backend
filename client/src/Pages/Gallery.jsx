@@ -1,85 +1,80 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import "../Pages/style/Gallery.css";
 import { FaChevronRight } from "react-icons/fa";
 
 import banner from "../assets/gallery.jpg";
 
-import img1 from "../assets/programs1.jpeg";
-import img2 from "../assets/events1.jpeg";
-import img3 from "../assets/programs2.jpg.jpeg";
-import img4 from "../assets/programs3.jpeg";
-import img5 from "../assets/events3.jpeg";
-import img6 from "../assets/programs4.jpeg";
 import SEO from "../Components/SEO";
+import { useNavigate } from "react-router-dom";
 
-const galleryData = [
-
-  {
-    id: 1,
-    image: img1,
-    category: "Events",
-    title:"Community Gathering - Culture and Awareness Program",
-  },
-
-  {
-    id: 2,
-    image: img2,
-    category: "Programs",
-    title:"Social Awareness - Nasha Mukt Bharat Abhiyan Jan Jagrookta Shapath",
-    
-  },
-
-  {
-    id: 3,
-    image: img3,
-    category: "Activities",
-    title:"Skill Development - NIESBUD Silai-Kadai & Beauty Therapist Certification",
-  },
-
-  {
-    id: 4,
-    image: img4,
-    category: "Events",
-    title:"Collaboration Setup - M.P. Jan Abhiyan Parishad Program",
-  },
-
-  {
-    id: 5,
-    image: img5,
-    category: "Programs",
-    title:"Recognition & Dignitaries Meet - Government Recognition Program",
-  },
-
-  {
-    id: 6,
-    image: img6,
-    category: "Activities",
-     title:"Plantation Drive - 'Ek Ped Maa Ke Naam' Paudharopan Karyakram",
-  },
-
-];
+import { galleryService } from "../services/galleryService";
 
 const Gallery = () => {
-
   const [active, setActive] = useState("All");
+  const [galleryData, setGalleryData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredGallery =
-    active === "All"
-      ? galleryData
-      : galleryData.filter(
-          (item) => item.category === active
-        );
+  const activeBtnRef = useRef(null);
+  const navigate = useNavigate();
+
+  // =====================================
+  // Fetch Gallery From Backend
+  // =====================================
+
+  const fetchGallery = async () => {
+    try {
+      setLoading(true);
+
+      const response = await galleryService.getAll();
+
+      setGalleryData(response.gallery || []);
+    } catch (error) {
+      console.error("Gallery Fetch Error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =====================================
+  // Page Load
+  // =====================================
+
+  useEffect(() => {
+    fetchGallery();
+  }, []);
+
+  // =====================================
+  // Active Filter Scroll
+  // =====================================
+
+  useEffect(() => {
+    activeBtnRef.current?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [active]);
+
+  // =====================================
+  // Filter Gallery
+  // =====================================
+
+const filteredGallery =
+  active === "All"
+    ? galleryData
+    : galleryData.filter(
+        (item) => item.section === active
+      );
 
   return (
-
     <>
-    <SEO
-title="Gallery | Sahyog Welfare Foundation"
-description="View photos of our social work, health camps and educational activities."
-keywords="NGO Gallery, Photos"
-image="/logo.png"
-url="https://www.sahyogfoundation.org/gallery"
-/>
+      <SEO
+        title="Gallery | Sahyog Welfare Foundation"
+        description="View photos of our social work, health camps and educational activities."
+        keywords="NGO Gallery, Photos"
+        image="/logo.png"
+        url="https://www.sahyogfoundation.org/gallery"
+      />
 
       {/* ================= Banner ================= */}
 
@@ -98,7 +93,12 @@ url="https://www.sahyogfoundation.org/gallery"
 
           <p>
 
-            Home
+            <span
+              className="events-crumb-home"
+              onClick={() => navigate("/")}
+            >
+              Home
+            </span>
 
             <FaChevronRight />
 
@@ -121,81 +121,133 @@ url="https://www.sahyogfoundation.org/gallery"
           <div className="gallery-filter">
 
             <button
-              className={
-                active === "All" ? "active" : ""
+              ref={
+                active === "All"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("All")}
+              className={
+                active === "All"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("All")
+              }
             >
               All
             </button>
 
             <button
-              className={
-                active === "Events" ? "active" : ""
+              ref={
+                active === "Events"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Events")}
+              className={
+                active === "Events"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Events")
+              }
             >
               Events
             </button>
 
             <button
-              className={
-                active === "Programs" ? "active" : ""
+              ref={
+                active === "Programs"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Programs")}
+              className={
+                active === "Programs"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Programs")
+              }
             >
               Programs
             </button>
 
             <button
-              className={
-                active === "Activities" ? "active" : ""
+              ref={
+                active === "Activities"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Activities")}
+              className={
+                active === "Activities"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Activities")
+              }
             >
               Activities
             </button>
 
           </div>
 
-          {/* Gallery Grid */}
+          {/* ================= Gallery Grid ================= */}
 
-          <div className="gallery-grid">
-                      {filteredGallery.map((item) => (
+          {loading ? (
 
-            <div
-              className="gallery-card"
-              key={item.id}
-            >
+            <div className="gallery-loading">
+              Loading gallery...
+            </div>
 
-              <img
-                src={item.image}
-                alt={item.category}
-              />
+          ) : filteredGallery.length === 0 ? (
 
-              <div className="gallery-hover">
+            <div className="gallery-empty">
+              No gallery images found.
+            </div>
 
-                <span>
-                 
-                 {item.title} 
-                </span>
+          ) : (
 
-              </div>
+            <div className="gallery-grid">
+
+              {filteredGallery.map((item) => (
+
+                <div
+                  className="gallery-card"
+                  key={item._id}
+                >
+
+                  {/* Backend se image URL */}
+
+                  <img
+                    src={item.images?.[0]}
+                    alt={item.title}
+                  />
+
+                  <div className="gallery-hover">
+
+                    <span>
+                      {item.title}
+                    </span>
+
+                  </div>
+
+                </div>
+
+              ))}
 
             </div>
 
-          ))}
-
-          </div>
+          )}
 
         </div>
 
       </section>
 
     </>
-
   );
-
 };
 
 export default Gallery;

@@ -1,199 +1,267 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./EventsAdmin.css";
+
 
 const AddEvent = () => {
 
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
 
-    title: "",
 
-    location: "",
+  const [formData,setFormData] = useState({
 
-    date: "",
-
-    time: "",
-
-    description: "",
-
-    image: null,
-
-    status: "Upcoming",
+    title:"",
+    location:"",
+    date:"",
+    time:"",
+    description:"",
+    image:null,
+    status:"Upcoming",
 
   });
 
-  const handleChange = (e) => {
 
-    const { name, value } = e.target;
+
+  const handleChange=(e)=>{
 
     setFormData({
-
       ...formData,
-
-      [name]: value,
-
+      [e.target.name]:e.target.value
     });
 
   };
 
-  const handleImage = (e) => {
+
+
+  const handleImage=(e)=>{
 
     setFormData({
-
       ...formData,
-
-      image: e.target.files[0],
-
+      image:e.target.files[0]
     });
 
   };
 
-  const handleSubmit = (e) => {
+
+
+  const handleSubmit=async(e)=>{
 
     e.preventDefault();
 
-    console.log(formData);
 
-    alert("Event Added Successfully");
+    try{
+
+
+      const token = localStorage.getItem("token");
+
+
+      const data = new FormData();
+
+
+      data.append("title",formData.title);
+      data.append("location",formData.location);
+      data.append("date",formData.date);
+      data.append("time",formData.time);
+      data.append("description",formData.description);
+      data.append("status",formData.status);
+
+
+      if(formData.image){
+        data.append("image",formData.image);
+      }
+
+
+
+      await axios.post(
+        "http://localhost:5000/api/events",
+        data,
+        {
+          headers:{
+            Authorization:`Bearer ${token}`,
+            "Content-Type":"multipart/form-data"
+          }
+        }
+      );
+
+
+      alert("Event Added Successfully");
+
+      navigate("/admin/events");
+
+
+    }catch(error){
+
+      console.log(error);
+      alert(
+        error.response?.data?.message ||
+        "Failed to add event"
+      );
+
+    }
 
   };
 
-  return (
 
-    <div className="admin-page">
 
-      <h2>Add New Event</h2>
 
-      <form
-        className="admin-form"
-        onSubmit={handleSubmit}
-      >        <div className="form-row">
+return (
 
-          <div className="form-group">
+<div className="admin-page">
 
-            <label>Event Name</label>
 
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Enter Event Name"
-              required
-            />
+<h2>Add New Event</h2>
 
-          </div>
 
-          <div className="form-group">
+<form 
+className="admin-form"
+onSubmit={handleSubmit}
+>
 
-            <label>Location</label>
 
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="Enter Location"
-              required
-            />
+<div className="form-row">
 
-          </div>
 
-        </div>
+<div className="form-group">
 
-        <div className="form-row">
+<label>Event Name</label>
 
-          <div className="form-group">
+<input
+type="text"
+name="title"
+value={formData.title}
+onChange={handleChange}
+required
+/>
 
-            <label>Event Date</label>
+</div>
 
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-            />
 
-          </div>
 
-          <div className="form-group">
+<div className="form-group">
 
-            <label>Event Time</label>
+<label>Location</label>
 
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              required
-            />
+<input
+type="text"
+name="location"
+value={formData.location}
+onChange={handleChange}
+required
+/>
 
-          </div>
+</div>
 
-        </div>
-                <div className="form-group">
 
-          <label>Description</label>
+</div>
 
-          <textarea
-            rows="6"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            placeholder="Event Description"
-          />
 
-        </div>
 
-        <div className="form-group">
+<div className="form-row">
 
-          <label>Upload Banner</label>
 
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImage}
-          />
+<div className="form-group">
 
-        </div>
+<label>Date</label>
 
-        <div className="form-group">
+<input
+type="date"
+name="date"
+value={formData.date}
+onChange={handleChange}
+required
+/>
 
-          <label>Status</label>
+</div>
 
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-          >
 
-            <option value="Upcoming">
-              Upcoming
-            </option>
 
-            <option value="Completed">
-              Completed
-            </option>
+<div className="form-group">
 
-          </select>
+<label>Time</label>
 
-        </div>
+<input
+type="time"
+name="time"
+value={formData.time}
+onChange={handleChange}
+/>
 
-        <button
-          type="submit"
-          className="save-btn"
-        >
+</div>
 
-          Save Event
 
-        </button>
+</div>
 
-      </form>
 
-    </div>
 
-  );
+<div className="form-group">
 
-};
+<label>Description</label>
+
+<textarea
+rows="6"
+name="description"
+value={formData.description}
+onChange={handleChange}
+/>
+
+</div>
+
+
+
+<div className="form-group">
+
+<label>Upload Banner</label>
+
+<input
+type="file"
+accept="image/*"
+onChange={handleImage}
+/>
+
+</div>
+
+
+
+<div className="form-group">
+
+<label>Status</label>
+
+<select
+name="status"
+value={formData.status}
+onChange={handleChange}
+>
+
+<option value="Upcoming">
+Upcoming
+</option>
+
+
+<option value="Completed">
+Completed
+</option>
+
+
+</select>
+
+</div>
+
+
+
+<button className="save-btn">
+Save Event
+</button>
+
+
+
+</form>
+
+
+</div>
+
+)
+
+}
 
 export default AddEvent;

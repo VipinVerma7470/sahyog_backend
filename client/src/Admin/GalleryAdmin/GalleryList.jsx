@@ -1,55 +1,126 @@
+import { useEffect, useState } from "react";
 import "./GalleryAdmin.css";
 import { Link } from "react-router-dom";
-import { FaPlus, FaSearch } from "react-icons/fa";
-
-import img1 from "../../assets/aboutt.jpg";
-import img2 from "../../assets/aboutt.jpg";
-import img3 from "../../assets/aboutt.jpg";
-import img4 from "../../assets/aboutt.jpg";
-
-const gallery = [
-
-  {
-    id:1,
-    title:"Tree Plantation",
-    category:"Environment",
-    image:img1
-  },
-
-  {
-    id:2,
-    title:"Blood Donation",
-    category:"Healthcare",
-    image:img2
-  },
-
-  {
-    id:3,
-    title:"Women Empowerment",
-    category:"Women",
-    image:img3
-  },
-
-  {
-    id:4,
-    title:"Education Camp",
-    category:"Education",
-    image:img4
-  }
-
-];
+import {
+  FaPlus,
+  FaSearch,
+} from "react-icons/fa";
+import axios from "axios";
 
 const GalleryList = () => {
+  const [gallery, setGallery] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // ===============================
+  // Fetch Gallery
+  // ===============================
+
+  const fetchGallery = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(
+        "http://localhost:5000/api/gallery",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setGallery(
+        response.data.gallery || []
+      );
+    } catch (error) {
+      console.error(
+        "Fetch Gallery Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to fetch gallery"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchGallery();
+  }, []);
+
+  // ===============================
+  // Delete Gallery
+  // ===============================
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this gallery?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.delete(
+        `http://localhost:5000/api/gallery/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message);
+
+      setGallery((prevGallery) =>
+        prevGallery.filter(
+          (item) => item._id !== id
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Delete Gallery Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete gallery"
+      );
+    }
+  };
+
+  // ===============================
+  // Search Gallery
+  // ===============================
+
+  const filteredGallery = gallery.filter(
+    (item) =>
+      `${item.title} ${item.category}`
+        .toLowerCase()
+        .includes(search.toLowerCase())
+  );
 
   return (
-
     <div className="admin-page">
+
+      {/* ===============================
+          Header
+      =============================== */}
 
       <div className="page-header">
 
         <div>
 
-          <h2>Gallery Management</h2>
+          <h2>
+            Gallery Management
+          </h2>
 
           <p>
             Add, Update and Delete Gallery Images
@@ -64,11 +135,15 @@ const GalleryList = () => {
 
           <FaPlus />
 
-          Add Image
+          Add Gallery
 
         </Link>
 
       </div>
+
+      {/* ===============================
+          Search Toolbar
+      =============================== */}
 
       <div className="toolbar">
 
@@ -78,71 +153,111 @@ const GalleryList = () => {
 
           <input
             type="text"
-            placeholder="Search Images..."
+            placeholder="Search Gallery..."
+            value={search}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
           />
 
         </div>
 
       </div>
 
-      <div className="gallery-admin-grid">
-                {gallery.map((item)=>(
+      {/* ===============================
+          Loading
+      =============================== */}
 
-          <div
-            className="gallery-admin-card"
-            key={item.id}
-          >
+      {loading ? (
 
-            <img
-              src={item.image}
-              alt={item.title}
-            />
+        <p>
+          Loading gallery...
+        </p>
 
-            <div className="gallery-admin-content">
+      ) : filteredGallery.length === 0 ? (
 
-              <span>
+        <p>
+          No gallery found.
+        </p>
 
-                {item.category}
+      ) : (
 
-              </span>
+        <div className="gallery-admin-grid">
 
-              <h3>
+          {filteredGallery.map(
+            (item) => (
 
-                {item.title}
+              <div
+                className="gallery-admin-card"
+                key={item._id}
+              >
 
-              </h3>
+                {/* ===============================
+                    First Image
+                =============================== */}
 
-              <div className="gallery-admin-buttons">
+                <img
+                  src={item.images?.[0]}
+                  alt={item.title}
+                />
 
-                <Link
-                  to={`/admin/gallery/edit/${item.id}`}
-                  className="edit-btn"
-                >
+                {/* ===============================
+                    Content
+                =============================== */}
 
-                  Edit
+                <div className="gallery-admin-content">
 
-                </Link>
+                  <span>
+                    {item.category}
+                  </span>
 
-                <button className="delete-btn">
+                  <h3>
+                    {item.title}
+                  </h3>
 
-                  Delete
+                  {item.description && (
 
-                </button>
+                    <p>
+                      {item.description}
+                    </p>
+
+                  )}
+
+                  <div className="gallery-admin-buttons">
+
+                    <Link
+                      to={`/admin/gallery/edit/${item._id}`}
+                      className="edit-btn"
+                    >
+                      Edit
+                    </Link>
+
+                    <button
+                      className="delete-btn"
+                      onClick={() =>
+                        handleDelete(
+                          item._id
+                        )
+                      }
+                    >
+                      Delete
+                    </button>
+
+                  </div>
+
+                </div>
 
               </div>
 
-            </div>
+            )
+          )}
 
-          </div>
+        </div>
 
-        ))}
-
-      </div>
+      )}
 
     </div>
-
   );
-
 };
 
 export default GalleryList;

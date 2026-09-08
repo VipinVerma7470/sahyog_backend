@@ -192,12 +192,26 @@
 
 @media (max-width:1200px){
 
+.hero-section{
+
+min-height:680px;
+
+}
+
 .hero-content{
-width:500px;
+
+width:520px;
+
+padding-top:70px;
+
+padding-bottom:80px;
+
 }
 
 .hero-content h1{
+
 font-size:58px;
+
 }
 
 }
@@ -208,7 +222,9 @@ font-size:58px;
 
 min-height:auto;
 
-padding:90px 0 170px;
+padding:90px 0;
+
+background-position:60% center;
 
 }
 
@@ -216,44 +232,33 @@ padding:90px 0 170px;
 
 width:100%;
 
-padding-bottom:60px;
+max-width:620px;
+
+padding:0;
 
 }
 
 .hero-content h1{
 
-font-size:52px;
+font-size:48px;
+
+line-height:1.2;
 
 }
 
-.hero-stats{
+.hero-content p{
 
-position:relative;
+font-size:16px;
 
-bottom:auto;
+line-height:1.8;
 
-left:auto;
-
-transform:none;
-
-width:100%;
-
-margin-top:40px;
-
-grid-template-columns:repeat(2,1fr);
+max-width:100%;
 
 }
 
-.stat-box:nth-child(2){
+.hero-buttons{
 
-border-right:none;
-
-}
-
-.stat-box:nth-child(1),
-.stat-box:nth-child(2){
-
-border-bottom:1px solid #eee;
+flex-wrap:wrap;
 
 }
 
@@ -261,9 +266,50 @@ border-bottom:1px solid #eee;
 
 @media (max-width:768px){
 
+.hero-section{
+
+padding:80px 0;
+
+background-position:65% center;
+
+}
+
+.hero-overlay{
+
+background:linear-gradient(
+90deg,
+rgba(45,43,17,.90),
+rgba(45,43,17,.75),
+rgba(45,43,17,.55)
+);
+
+}
+
+.hero-content{
+
+width:100%;
+
+text-align:left;
+
+padding:0;
+
+}
+
+.hero-small-title{
+
+font-size:13px;
+
+letter-spacing:1px;
+
+}
+
 .hero-content h1{
 
-font-size:42px;
+font-size:38px;
+
+line-height:1.25;
+
+margin-bottom:20px;
 
 }
 
@@ -271,39 +317,31 @@ font-size:42px;
 
 font-size:15px;
 
+line-height:1.7;
+
+margin-bottom:25px;
+
 }
 
 .hero-buttons{
 
+display:flex;
+
 flex-direction:column;
+
+width:100%;
 
 }
 
 .donate-btn,
+.donate-btnn,
 .volunteer-btn{
 
 width:100%;
 
 justify-content:center;
 
-}
-
-.hero-stats{
-
-grid-template-columns:1fr;
-
-}
-
-.stat-box{
-
-border-right:none;
-border-bottom:1px solid #eee;
-
-}
-
-.stat-box:last-child{
-
-border-bottom:none;
+text-align:center;
 
 }
 
@@ -313,27 +351,68 @@ border-bottom:none;
 
 .hero-section{
 
-margin-top:10px;
+padding:70px 0;
 
-border-radius:16px;
+border-radius:0;
 
-}
 
-.hero-content{
-
-padding-top:40px;
 
 }
 
 .hero-content h1{
 
-font-size:34px;
+font-size:32px;
+
+}
+
+.hero-content p{
+
+font-size:14px;
 
 }
 
 .hero-small-title{
 
 font-size:12px;
+
+}
+
+.donate-btn,
+.donate-btnn,
+.volunteer-btn{
+
+padding:15px 18px;
+
+font-size:15px;
+
+}
+
+}
+@media (max-width:400px){
+
+.hero-section{
+
+padding:60px 0;
+
+}
+
+.hero-content h1{
+
+font-size:28px;
+
+line-height:1.3;
+
+}
+
+.hero-content p{
+
+font-size:13px;
+
+}
+
+.hero-small-title{
+
+font-size:11px;
 
 }
 

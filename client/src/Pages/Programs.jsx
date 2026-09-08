@@ -1,180 +1,340 @@
 import "../Pages/style/Programs.css";
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+
+import { useNavigate, useLocation } from "react-router-dom";
+
 import { FaChevronRight, FaArrowRight } from "react-icons/fa";
 
-import banner from "../assets/ngo.jpg";
+import banner from "../assets/program-banner.png";
 
-import program1 from "../assets/child.jpeg";
-import program2 from "../assets/women.jpeg";
-import program3 from "../assets/skills2.jpeg";
-import program4 from "../assets/health.jpeg";
-import program5 from "../assets/env1.jpeg";
-import program6 from "../assets/skills.jpeg";
 import SEO from "../Components/SEO";
-import { useState, useEffect } from "react";
 
-const programs = [
-  {
-    id: 1,
-    category: "Education",
-    image: program1,
-    title: "Child Education",
-    description: "Providing free and quality education to children in need.",
-  },
-{
-    id: 2,
-    category: "Healthcare",
-    image: program4,
-    title: "Healthcare",
-    description:
-      "Medical camps and healthcare assistance for rural communities.",
-  },
-   {
-    id: 3,
-    category: "Environment",
-    image: program5,
-    title: "Environmental",
-    description: "Tree plantation drives and environmental awareness.",
-  },
-  {
-    id: 4,
-    category: "Empowerment",
-    image: program2,
-    title: "Women Empowerment",
-    description:
-      "Empowering women through skills and self-employment initiatives.",
-  },
+import { useRef, useState, useEffect } from "react";
 
-  {
-    id: 5,
-    category: "Skill Development",
-    image: program3,
-    title: "Skill Development",
-    description: "Vocational training and career development programs.",
-  },
-
-
-  {
-    id: 6,
-    image: program6,
-    category: "Skill Development",
-    title: "Digital Literacy",
-    description: "Promoting digital skills and computer education.",
-  },
-];
+import { programService } from "../services/programService";
 
 const Programs = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
-    const [active, setActive] = useState("All");
 
-    
-    
-    useEffect(() => {
+  const activeBtnRef = useRef(null);
 
-      window.scrollTo(0, 0);
-    if (location.state && location.state.category) {
+  const [active, setActive] = useState("All");
+
+  const [programs, setPrograms] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
+  // ===============================
+  // Fetch Programs From Backend
+  // ===============================
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const response = await programService.getAll();
+
+        console.log("Programs API Response:", response);
+
+        setPrograms(
+          response.programs ||
+          response.data ||
+          []
+        );
+
+      } catch (error) {
+        console.error(
+          "Programs Fetch Error:",
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, []);
+
+  // ===============================
+  // Handle Category From Other Page
+  // ===============================
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    if (location.state?.category) {
       setActive(location.state.category);
-      
-      // State ko clean karne ke liye taaki page refresh par filter reset ho sake (optional)
-      window.history.replaceState({}, document.title);
+
+      window.history.replaceState(
+        {},
+        document.title
+      );
     }
   }, [location]);
 
-    const filteredPrograms =
-      active === "All"
-        ? programs
-        : programs.filter(
-            (item) => item.category === active
-          );
+  // ===============================
+  // Scroll Active Category
+  // ===============================
+
+  useEffect(() => {
+    activeBtnRef.current?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [active]);
+
+  // ===============================
+  // Filter Programs
+  // ===============================
+
+  const filteredPrograms =
+    active === "All"
+      ? programs
+      : programs.filter(
+          (item) =>
+            item.category?.trim().toLowerCase() ===
+            active.trim().toLowerCase()
+        );
+
   return (
     <>
-    <SEO
-title="Programs | Sahyog Welfare Foundation"
-description="Explore our education, healthcare and community development programs."
-keywords="NGO programs, education, health"
-image="/logo.png"
-url="https://www.sahyogfoundation.org/programs"
-/>
+      <SEO
+        title="Programs | Sahyog Welfare Foundation"
+        description="Explore our education, healthcare and community development programs."
+        keywords="NGO programs, education, health"
+        image="/logo.png"
+        url="https://www.sahyogfoundation.org/programs"
+      />
+
+      {/* ================= Banner ================= */}
+
       <section className="program-banner">
-        <img src={banner} alt="" />
+
+        <img
+          src={banner}
+          alt="Programs Banner"
+        />
 
         <div className="banner-overlay"></div>
 
         <div className="banner-content">
+
           <h1>Programs</h1>
 
           <p>
-            Home
+
+            <span
+              onClick={() => navigate("/")}
+              style={{
+                cursor: "pointer",
+              }}
+            >
+              Home
+            </span>
+
             <FaChevronRight />
+
             Programs
+
           </p>
+
         </div>
+
       </section>
 
+      {/* ================= Programs ================= */}
+
       <section className="program-page">
+
         <div className="container">
+
+          {/* Category Tabs */}
+
           <div className="program-tabs">
-            <button className={
-                active === "All" ? "active" : ""
-              }
-              onClick={() => setActive("All")}>All Programs</button>
 
             <button
-             className={
-                active === "Education" ? "active" : ""
+              ref={
+                active === "All"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Education")}>Education</button>
-             
-            
-            <button
-             className={
-                active === "Healthcare" ? "active" : ""
+              className={
+                active === "All"
+                  ? "active"
+                  : ""
               }
-              onClick={() => setActive("Healthcare")}>Healthcare</button>
+              onClick={() =>
+                setActive("All")
+              }
+            >
+              All Programs
+            </button>
 
             <button
-             className={
-                active === "Empowerment" ? "active" : ""
+              ref={
+                active === "Education"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Empowerment")}>Empowerment</button>
+              className={
+                active === "Education"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Education")
+              }
+            >
+              Education
+            </button>
 
             <button
-             className={
-                active === "Environment" ? "active" : ""
+              ref={
+                active === "Healthcare"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Environment")}>Environment</button>
+              className={
+                active === "Healthcare"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Healthcare")
+              }
+            >
+              Healthcare
+            </button>
 
             <button
-             className={
-                active === "Skill Development" ? "active" : ""
+              ref={
+                active === "Women Empowerment"
+                  ? activeBtnRef
+                  : null
               }
-              onClick={() => setActive("Skill Development")}>Skill Development</button>
+              className={
+                active === "Women Empowerment"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Women Empowerment")
+              }
+            >
+              Women Empowerment
+            </button>
+
+            <button
+              ref={
+                active === "Environment"
+                  ? activeBtnRef
+                  : null
+              }
+              className={
+                active === "Environment"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Environment")
+              }
+            >
+              Environment
+            </button>
+
+            <button
+              ref={
+                active === "Skill Development"
+                  ? activeBtnRef
+                  : null
+              }
+              className={
+                active === "Skill Development"
+                  ? "active"
+                  : ""
+              }
+              onClick={() =>
+                setActive("Skill Development")
+              }
+            >
+              Skill Development
+            </button>
+
           </div>
 
+          {/* Loading */}
+
+          {loading && (
+            <p className="loading-text">
+              Loading Programs...
+            </p>
+          )}
+
+          {/* No Programs */}
+
+          {!loading &&
+            filteredPrograms.length === 0 && (
+
+              <p className="no-programs">
+                No programs found in this category.
+              </p>
+
+            )}
+
+          {/* Program Grid */}
+
           <div className="program-grid">
-            { filteredPrograms.map((item) => (
-              <div className="program-card" key={item.id}>
+
+            {filteredPrograms.map((item) => (
+
+              <div
+                className="program-card"
+                key={item._id}
+              >
+
                 <div className="program-image">
-                  <img src={item.image} alt={item.title} />
+
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                  />
+
                 </div>
 
                 <div className="program-content">
-                  <h3>{item.title}</h3>
 
-                  <p>{item.description}</p>
+                  <h3>
+                    {item.title}
+                  </h3>
 
-                  <button onClick={() => navigate(`/programs/${item.id}`)}>
+                  <p>
+                    {item.description}
+                  </p>
+
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/programs/${item._id}`
+                      )
+                    }
+                  >
+
                     Read More
+
                     <FaArrowRight />
+
                   </button>
-                  
+
                 </div>
+
               </div>
+
             ))}
+
           </div>
+
         </div>
+
       </section>
     </>
   );

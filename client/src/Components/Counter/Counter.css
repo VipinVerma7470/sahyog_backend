@@ -87,51 +87,172 @@
     font-weight:500;
 
 }
+.counter-info{
+    text-align:center;
+}
 
-@media(max-width:992px){
+/* ==========================
+TABLET (992px)
+========================== */
 
-.counter-wrapper{
+@media (max-width:992px){
 
-grid-template-columns:repeat(2,1fr);
+    .counter-section{
+        margin-top:40px;
+    }
+
+    .counter-wrapper{
+        grid-template-columns:repeat(2,1fr);
+        border-radius:20px;
+    }
+
+    .counter-card{
+        padding:35px 20px;
+    }
+
+    .counter-card:nth-child(2){
+        border-right:none;
+    }
+
+    .counter-card:nth-child(1),
+    .counter-card:nth-child(2){
+        border-bottom:1px solid #ececec;
+    }
+
+    .counter-icon{
+        width:65px;
+        height:65px;
+        font-size:24px;
+        margin-bottom:18px;
+    }
+
+    .counter-card h2{
+        font-size:34px;
+    }
+
+    .counter-card p{
+        font-size:15px;
+    }
 
 }
 
-.counter-card:nth-child(2){
-border-right:none;
+
+/* ==========================
+MOBILE (768px)
+========================== */
+
+@media (max-width:768px){
+
+    .counter-section{
+        margin-top:30px;
+        padding:0 15px;
+    }
+
+    .counter-wrapper{
+        grid-template-columns:1fr;
+        border-radius:18px;
+    }
+
+    .counter-card{
+        display:flex;
+        align-items:center;
+        gap:25px;   /* icon aur text ke beech space badha diya */
+        text-align:left;
+        padding:18px 15px;  /* card height choti */
+        border-right:none;
+        border-bottom:1px solid #ececec;
+    }
+
+    .counter-card:last-child{
+        border-bottom:none;
+    }
+
+    .counter-card:hover{
+        transform:none;
+    }
+
+    .counter-info{
+        flex:1;
+        text-align:left;
+    }
+
+    .counter-icon{
+        width:48px;
+        height:48px;
+        min-width:48px;
+        font-size:18px;
+        margin:0;
+    }
+
+    .counter-card h2{
+        font-size:22px;
+        margin-bottom:3px;
+    }
+
+    .counter-card p{
+        font-size:13px;
+        margin:0;
+    }
+
 }
 
-.counter-card:nth-child(1),
-.counter-card:nth-child(2){
-border-bottom:1px solid #eee;
+
+/* ==========================
+SMALL MOBILE (480px)
+========================== */
+
+@media (max-width:480px){
+
+    .counter-section{
+        padding:0 10px;
+        margin-top:25px;
+    }
+
+   .counter-card{
+    padding:15px 12px;
+    gap:20px;
 }
 
-}
-
-@media(max-width:576px){
-
-.counter-wrapper{
-
-grid-template-columns:1fr;
-
-}
-
-.counter-card{
-
-border-right:none;
-border-bottom:1px solid #eee;
-
-}
-
-.counter-card:last-child{
-
-border-bottom:none;
-
+.counter-icon{
+    width:45px;
+    height:45px;
+    min-width:45px;
+    font-size:18px;
 }
 
 .counter-card h2{
+    font-size:22px;
+}
 
-font-size:32px;
+.counter-card p{
+    font-size:13px;
+}
 
 }
+
+
+/* ==========================
+EXTRA SMALL (360px)
+========================== */
+
+@media (max-width:360px){
+
+    .counter-card{
+        padding:22px 12px;
+    }
+
+    .counter-icon{
+        width:50px;
+        height:50px;
+        font-size:18px;
+    }
+
+    .counter-card h2{
+        font-size:24px;
+    }
+
+    .counter-card p{
+        font-size:13px;
+    }
 
 }

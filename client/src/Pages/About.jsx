@@ -7,39 +7,40 @@ import {
   FaAward
 } from "react-icons/fa"; // New stats icons imported helper tools
 
-import banner from "../assets/aboutt.jpg";
+import banner from "../assets/about-banner.png";
 import directorImg from "../assets/director.jpeg";
-import storyImg from "../assets/about.jpg";
+import storyImg from "../assets/about.png";
 //achivements
 import envPhoto from "../assets/programs4.jpeg"; 
 import awardPhoto from "../assets/img3.jpeg"; 
 import skillPhoto from "../assets/skills.jpeg"; 
 import healthPhoto from "../assets/itiNasha.jpeg";
 import SEO from "../Components/SEO";
+import { useNavigate } from "react-router-dom";
 
 const journey = [
   {
-    year: "2012",
+    year: "2018",
     title: "Foundation",
     desc: "Established",
   },
   {
-    year: "2014",
+    year: "2020",
     title: "First Education",
     desc: "Program",
   },
   {
-    year: "2016",
+    year: "2022",
     title: "Health Camps",
     desc: "Initiated",
   },
   {
-    year: "2018",
+    year: "2024",
     title: "Women Empowerment",
     desc: "Programs",
   },
   {
-    year: "2022",
+    year: "2026",
     title: "Expanded",
     desc: "To More Communities",
   },
@@ -82,6 +83,7 @@ const achievements = [
 ];
 
 const About = () => {
+  const navigate = useNavigate();
   return (
     <>
        <SEO
@@ -102,8 +104,8 @@ url="https://www.sahyogfoundation.org/about"
           <div className="container">
             <h1>About Us</h1>
             <p>
-              Home
-              <span>&gt;</span>
+             <span id="homenavi" onClick={() => navigate("/")}> Home</span> 
+              <span id="arrow"  >&gt;</span>
               About Us
             </p>
           </div>

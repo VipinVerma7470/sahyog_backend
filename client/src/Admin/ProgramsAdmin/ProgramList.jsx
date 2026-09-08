@@ -1,97 +1,124 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import "./ProgramsAdmin.css";
 
 const ProgramList = () => {
+  const [programs, setPrograms] = useState([]);
 
-  const programs = [
-    {
-      id: 1,
-      title: "Child Education",
-      category: "Education",
-      image:
-        "https://images.unsplash.com/photo-1509062522246-3755977927d7"
-    },
-    {
-      id: 2,
-      title: "Women Empowerment",
-      category: "Women",
-      image:
-        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f"
-    },
-    {
-      id: 3,
-      title: "Healthcare",
-      category: "Health",
-      image:
-        "https://images.unsplash.com/photo-1576091160550-2173dba999ef"
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPrograms();
+  }, []);
+
+  const fetchPrograms = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/programs");
+
+      setPrograms(response.data.programs);
+    } catch (error) {
+      console.log("Fetch Programs Error:", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this program?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+
+      await axios.delete(`http://localhost:5000/api/programs/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert("Program Deleted Successfully");
+
+      fetchPrograms();
+    } catch (error) {
+      console.log(error);
+
+      alert(error.response?.data?.message || "Delete Failed");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="admin-page">
+        <h2>Loading Programs...</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="admin-page">
-
       <div className="page-header">
-
         <h2>Programs</h2>
 
         <Link to="/admin/programs/add" className="add-btn">
           + Add Program
         </Link>
-
       </div>
 
-      <table className="admin-table">
+      {programs.length === 0 ? (
+        <h3>No Programs Found</h3>
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Image</th>
 
-        <thead>
+              <th>Program</th>
 
-          <tr>
-            <th>Image</th>
-            <th>Program</th>
-            <th>Category</th>
-            <th>Action</th>
-          </tr>
+              <th>Category</th>
 
-        </thead>
-
-        <tbody>
-
-          {programs.map((item) => (
-
-            <tr key={item.id}>
-
-              <td>
-                <img src={item.image} alt="" />
-              </td>
-
-              <td>{item.title}</td>
-
-              <td>{item.category}</td>
-
-              <td>
-
-                <Link
-  to={`/admin/programs/edit/${item.id}`}
-  className="edit-btn"
->
-
-Edit
-
-</Link>
-
-                <button className="delete-btn">
-                  Delete
-                </button>
-
-              </td>
-
+              <th>Action</th>
             </tr>
+          </thead>
 
-          ))}
+          <tbody>
+            {programs.map((item) => (
+              <tr key={item._id}>
+                <td>
+                  {item.image ? (
+                    <img src={item.image} alt={item.title} />
+                  ) : (
+                    "No Image"
+                  )}
+                </td>
 
-        </tbody>
+                <td>{item.title}</td>
 
-      </table>
+                <td>{item.category}</td>
 
+                <td>
+                  <Link
+                    to={`/admin/programs/edit/${item._id}`}
+                    className="edit-btn"
+                  >
+                    Edit
+                  </Link>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() => handleDelete(item._id)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 };

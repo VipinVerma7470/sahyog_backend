@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. useNavigate import karein
 import '../Pages/style/Events.css';
 import SEO from "../Components/SEO";
 import program from "../assets/programs2.jpg.jpeg";
+import { eventService } from "../services/eventService";
+
 
 // Events Banner Component
 const EventsBanner = () => {
+    const navigate = useNavigate();
   return (
     <div className="events-banner">
       <div className="events-banner-overlay">
         <h1>Our Events</h1>
         <p className="events-breadcrumb">
-          <span className="events-crumb-home">Home</span> &gt; <span className="events-crumb-current">Events</span>
+          <span className="events-crumb-home" onClick={() => navigate("/")}>Home</span> &gt; <span className="events-crumb-current">Events</span>
         </p>
       </div>
     </div>
@@ -55,108 +58,237 @@ const EventCard = ({ id, image, day, month, title, time, location, excerpt, isPa
 
 // Main Events Page Assembly
 const Events = () => {
-  const [activeTab, setActiveTab] = useState('upcoming');
+  const [activeTab, setActiveTab] =
+    useState("upcoming");
 
-   
-  const upcomingEvents = [
-    {
-      id: 1,
-      day: "15",
-      month: "JUL",
-      title: "Tree Plantation Drive",
-      time: "09:00 AM - 01:00 PM",
-      location: "Arera Colony, Bhopal",
-      excerpt: "Join us in planting more than 500 trees across the city to build a greener and cleaner tomorrow for everyone.",
-      image: "https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=600"
-    },
-    {
-      id: 2,
-      day: "22",
-      month: "JUL",
-      title: "Free Health Check-up Camp",
-      time: "10:00 AM - 04:00 PM",
-      location: "Kolar Road Slums, Bhopal",
-      excerpt: "Providing free medical check-ups, sugar tests, and essential medicines to underserved families.",
-      image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=600"
-    },
-    {
-      id: 3,
-      day: "05",
-      month: "AUG",
-      title: "Women Skill Workshop",
-      time: "11:00 AM - 03:00 PM",
-      location: "Sahyog Center, Bhopal",
-      excerpt: "A hands-on stitching and handcraft workshop designed to empower local women toward financial independence.",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600"
-    }
-  ];
+  const [events, setEvents] =
+    useState([]);
 
-  const pastEvents = [
-    {
-      id: 4,
-      day: "05",
-      month: "JUN",
-      title: "International Women's Day Celebration",
-      time: "07:30 AM - 10:30 AM",
-      location: "Sahyog Welfare Foundation, Bhopal",
-      excerpt: "Sahyog Welfare Foundation celebrated International Women's Day by honoring women and recognizing meritorious students for their outstanding achievements and inspiring contributions.",
-      image: program,
-    },
-    {
-      id: 5,
-      day: "10",
-      month: "MAY",
-      title: "Digital Literacy Drive",
-      time: "10:00 AM - 02:00 PM",
-      location: "Govt School, Misrod",
-      excerpt: "Distributed basic computer kits and hosted an introductory coding session for rural high-school students.",
-      image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600"
-    }
-  ];
+  const [loading, setLoading] =
+    useState(true);
+
+  // ===============================
+  // Fetch Events
+  // ===============================
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+
+        const response =
+          await eventService.getAll();
+
+        console.log(
+          "Events API Response:",
+          response
+        );
+
+        setEvents(
+          response.events ||
+          response.data ||
+          []
+        );
+
+      } catch (error) {
+        console.error(
+          "Events Fetch Error:",
+          error
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  // ===============================
+  // Current Date
+  // ===============================
+
+  const today = new Date();
+
+  // ===============================
+  // Upcoming Events
+  // ===============================
+
+  const upcomingEvents = events.filter(
+    (event) =>
+      new Date(event.date) >= today
+  );
+
+  // ===============================
+  // Past Events
+  // ===============================
+
+  const pastEvents = events.filter(
+    (event) =>
+      new Date(event.date) < today
+  );
 
   return (
     <>
-     <SEO
+      <SEO
         title="Events | Sahyog Welfare Foundation"
         description="Stay updated with our latest events and community initiatives."
         keywords="NGO Events, Charity Events"
         image="/logo.png"
         url="https://www.sahyogfoundation.org/events"
       />
-   
-    
-    <div className="events-page-wrapper">
-      <EventsBanner />
-      <div className="events-content-container">
-        <div className="events-tabs">
-          <button 
-            className={`tab-btn ${activeTab === 'upcoming' ? 'active' : ''}`}
-            onClick={() => setActiveTab('upcoming')}
-          >
-            Upcoming Events ({upcomingEvents.length})
-          </button>
-          <button 
-            className={`tab-btn ${activeTab === 'past' ? 'active' : ''}`}
-            onClick={() => setActiveTab('past')}
-          >
-            Past Events ({pastEvents.length})
-          </button>
+
+      <div className="events-page-wrapper">
+
+        <EventsBanner />
+
+        <div className="events-content-container">
+
+          {/* ================= Tabs ================= */}
+
+          <div className="events-tabs">
+
+            <button
+              className={`tab-btn ${
+                activeTab === "upcoming"
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() =>
+                setActiveTab("upcoming")
+              }
+            >
+              Upcoming Events (
+              {upcomingEvents.length}
+              )
+            </button>
+
+            <button
+              className={`tab-btn ${
+                activeTab === "past"
+                  ? "active"
+                  : ""
+              }`}
+              onClick={() =>
+                setActiveTab("past")
+              }
+            >
+              Past Events (
+              {pastEvents.length}
+              )
+            </button>
+
+          </div>
+
+          {/* ================= Loading ================= */}
+
+          {loading ? (
+
+            <div className="events-loading">
+              Loading events...
+            </div>
+
+          ) : (
+
+            <div className="events-grid">
+
+              {activeTab === "upcoming" ? (
+
+                upcomingEvents.length === 0 ? (
+
+                  <p>
+                    No upcoming events found.
+                  </p>
+
+                ) : (
+
+                  upcomingEvents.map(
+                    (event) => (
+
+                      <EventCard
+                        key={event._id}
+                        id={event._id}
+                        image={event.image}
+                        day={new Date(
+                          event.date
+                        ).getDate()}
+                        month={new Date(
+                          event.date
+                        ).toLocaleString(
+                          "en-US",
+                          {
+                            month: "short",
+                          }
+                        )}
+                        title={event.title}
+                        time={event.time}
+                        location={
+                          event.location
+                        }
+                        excerpt={
+                          event.description
+                        }
+                        isPast={false}
+                      />
+
+                    )
+                  )
+
+                )
+
+              ) : (
+
+                pastEvents.length === 0 ? (
+
+                  <p>
+                    No past events found.
+                  </p>
+
+                ) : (
+
+                  pastEvents.map(
+                    (event) => (
+
+                      <EventCard
+                        key={event._id}
+                        id={event._id}
+                        image={event.image}
+                        day={new Date(
+                          event.date
+                        ).getDate()}
+                        month={new Date(
+                          event.date
+                        ).toLocaleString(
+                          "en-US",
+                          {
+                            month: "short",
+                          }
+                        )}
+                        title={event.title}
+                        time={event.time}
+                        location={
+                          event.location
+                        }
+                        excerpt={
+                          event.description
+                        }
+                        isPast={true}
+                      />
+
+                    )
+                  )
+
+                )
+
+              )}
+
+            </div>
+
+          )}
+
         </div>
 
-        <div className="events-grid">
-          {activeTab === 'upcoming' ? (
-            upcomingEvents.map(event => (
-              <EventCard key={event.id} {...event} isPast={false} />
-            ))
-          ) : (
-            pastEvents.map(event => (
-              <EventCard key={event.id} {...event} isPast={true} />
-            ))
-          )}
-        </div>
       </div>
-    </div>
-     </>
+    </>
   );
 };
 

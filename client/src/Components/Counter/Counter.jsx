@@ -42,18 +42,19 @@ const Counter = () => {
     <section className="counter-section">
       <div className="container counter-wrapper">
         {counterData.map((item) => (
-          <div className="counter-card" key={item.id}>
-            <div
-              className="counter-icon"
-              style={{ background: item.color }}
-            >
-              {item.icon}
-            </div>
+         <div className="counter-card" key={item.id}>
+  <div
+    className="counter-icon"
+    style={{ background: item.color }}
+  >
+    {item.icon}
+  </div>
 
-            <h2>{item.number}</h2>
-
-            <p>{item.title}</p>
-          </div>
+  <div className="counter-info">
+    <h2>{item.number}</h2>
+    <p>{item.title}</p>
+  </div>
+</div>
         ))}
       </div>
     </section>

@@ -59,7 +59,7 @@
 .blog-breadcrumb a:hover {
   color:  #ffffff;
 }
-.blog-crumb-home { opacity: 0.7; }
+.blog-crumb-home {color: white; font-weight: 600;}
 .blog-crumb-current { font-weight: 600; }
 
 /* --- RESPONSIVE BLOG GRID LAYOUT --- */

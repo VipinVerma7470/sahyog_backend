@@ -13,10 +13,10 @@ body{
 
 .admin-login{
     width:100%;
-    min-height:100vh;
+    height:100vh;          /* min-height ki jagah */
     display:grid;
     grid-template-columns:55% 45%;
-    overflow:hidden;
+    overflow:hidden;       /* page scroll band */
 }
 
 /* =========================
@@ -25,6 +25,7 @@ Left Side
 
 .login-left{
     position:relative;
+    height:100vh;
     overflow:hidden;
 }
 
@@ -33,6 +34,7 @@ Left Side
     height:100%;
     object-fit:cover;
 }
+
 
 .left-overlay{
     position:absolute;
@@ -72,21 +74,21 @@ Right Side
 ========================= */
 
 .login-right{
+    height:100vh;
     background:#f8fbf8;
     display:flex;
     justify-content:center;
     align-items:center;
-    padding:40px;
+    padding:20px;          /* 40px ki jagah 20px */
+    overflow:hidden;       /* right side bhi scroll na ho */
 }
 
 .login-card{
     width:100%;
-    max-width:480px;
-    background:rgba(255,255,255,.96);
-    border-radius:24px;
-    padding:50px;
-    box-shadow:0 25px 60px rgba(0,0,0,.12);
-    border:1px solid rgba(255,255,255,.6);
+    max-width:460px;
+    max-height:90vh;       /* card screen ke andar rahe */
+    overflow:auto;         /* agar kabhi chhoti screen ho */
+    padding:40px;          /* 50px se thoda kam */
 }
 
 .login-logo{

@@ -248,3 +248,143 @@ DETAILS CARD
     background:var(--primary-hover);
 
 }
+/* =========================
+   LOADING & EMPTY
+========================= */
+
+.contact-loading,
+.contact-empty{
+
+    padding:50px;
+
+    text-align:center;
+
+    color:#777;
+
+    font-size:16px;
+
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.contact-status{
+
+    display:inline-block;
+
+    padding:6px 12px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+
+/* Unread */
+
+.contact-status.unread{
+
+    background:#fff3cd;
+
+    color:#856404;
+
+}
+
+
+/* Read */
+
+.contact-status.read{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+}
+
+
+/* Replied */
+
+.contact-status.replied{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+
+/* =========================
+   MESSAGE DETAILS
+========================= */
+
+.detail-box{
+
+    padding:20px;
+
+    background:#f8f9fc;
+
+    border-radius:10px;
+
+}
+
+
+.detail-box label{
+
+    display:block;
+
+    font-size:13px;
+
+    color:#777;
+
+    margin-bottom:8px;
+
+}
+
+
+.detail-box p{
+
+    color:#333;
+
+    line-height:1.6;
+
+}
+
+
+.full-width{
+
+    margin-top:25px;
+
+}
+.contact-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.contact-filters button {
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  background: #e8e8e8;
+  color: #555;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.contact-filters button.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.contact-filters button:hover {
+  background: var(--primary);
+  color: #fff;
+}

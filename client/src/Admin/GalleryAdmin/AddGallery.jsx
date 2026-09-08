@@ -1,58 +1,103 @@
 import { useState } from "react";
 import "./GalleryAdmin.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AddGallery = () => {
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-
     title: "",
-
     category: "",
-
+    section: "",
     description: "",
-
-    images: []
-
+    images: [],
   });
 
-  const handleChange = (e) => {
+  const [loading, setLoading] = useState(false);
 
+  // ===============================
+  // Handle Text Change
+  // ===============================
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-
-      ...formData,
-
-      [name]: value
-
-    });
-
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  // ===============================
+  // Handle Multiple Images
+  // ===============================
 
   const handleImages = (e) => {
+    const files = Array.from(e.target.files);
 
-    setFormData({
-
-      ...formData,
-
-      images: [...e.target.files]
-
-    });
-
+    setFormData((prev) => ({
+      ...prev,
+      images: files,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  // ===============================
+  // Submit Gallery
+  // ===============================
 
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    if (formData.images.length === 0) {
+      alert("Please select at least one image");
+      return;
+    }
 
-    alert("Gallery Images Added Successfully");
+    try {
+      setLoading(true);
 
+      const data = new FormData();
+
+      data.append("title", formData.title);
+data.append("category", formData.category);
+data.append("section", formData.section);
+data.append("description", formData.description);
+
+      formData.images.forEach((image) => {
+        data.append("images", image);
+      });
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:5000/api/gallery",
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message);
+
+      // Successful add ke baad Gallery List page par redirect
+      navigate("/admin/gallery");
+
+    } catch (error) {
+      console.error("Add Gallery Error:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to add gallery"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-
     <div className="admin-page">
 
       <h2>Add Gallery Images</h2>
@@ -61,51 +106,112 @@ const AddGallery = () => {
         className="admin-form"
         onSubmit={handleSubmit}
       >
-                <div className="form-row">
 
-          <div className="form-group">
+        {/* ===============================
+            Title & Category
+        =============================== */}
 
-            <label>Gallery Title</label>
+      <div className="form-row">
 
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Enter Gallery Title"
-              required
-            />
+  {/* Gallery Title */}
 
-          </div>
+  <div className="form-group">
 
-          <div className="form-group">
+    <label>Gallery Title</label>
 
-            <label>Category</label>
+    <input
+      type="text"
+      name="title"
+      value={formData.title}
+      onChange={handleChange}
+      placeholder="Enter Gallery Title"
+      required
+    />
 
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              required
-            >
+  </div>
 
-              <option value="">Select Category</option>
 
-              <option value="Education">Education</option>
+  {/* Actual Category */}
 
-              <option value="Healthcare">Healthcare</option>
+  <div className="form-group">
 
-              <option value="Women">Women Empowerment</option>
+    <label>Category</label>
 
-              <option value="Environment">Environment</option>
+    <select
+      name="category"
+      value={formData.category}
+      onChange={handleChange}
+      required
+    >
 
-              <option value="Events">Events</option>
+      <option value="">
+        Select Category
+      </option>
 
-            </select>
+      <option value="Education">
+        Education
+      </option>
 
-          </div>
+      <option value="Healthcare">
+        Healthcare
+      </option>
 
-        </div>
+      <option value="Women">
+        Women Empowerment
+      </option>
+
+      <option value="Environment">
+        Environment
+      </option>
+
+      <option value="Events">
+        Events
+      </option>
+
+    </select>
+
+  </div>
+
+</div>
+
+
+<div className="form-row">
+
+  <div className="form-group">
+
+    <label>Gallery Section</label>
+
+    <select
+      name="section"
+      value={formData.section}
+      onChange={handleChange}
+      required
+    >
+
+      <option value="">
+        Select Gallery Section
+      </option>
+
+      <option value="Programs">
+        Programs
+      </option>
+
+      <option value="Events">
+        Events
+      </option>
+
+      <option value="Activities">
+        Activities
+      </option>
+
+    </select>
+
+  </div>
+
+</div>
+        {/* ===============================
+            Description
+        =============================== */}
 
         <div className="form-group">
 
@@ -120,7 +226,12 @@ const AddGallery = () => {
           />
 
         </div>
-                <div className="form-group">
+
+        {/* ===============================
+            Upload Images
+        =============================== */}
+
+        <div className="form-group">
 
           <label>Upload Images</label>
 
@@ -129,57 +240,61 @@ const AddGallery = () => {
             multiple
             accept="image/*"
             onChange={handleImages}
+            required
           />
 
         </div>
 
-        {
+        {/* ===============================
+            Image Preview
+        =============================== */}
 
-          formData.images.length > 0 && (
+        {formData.images.length > 0 && (
 
-            <div className="preview-grid">
+          <div className="preview-grid">
 
-              {
+            {formData.images.map(
+              (image, index) => (
 
-                formData.images.map((image,index)=>(
+                <div
+                  className="preview-card"
+                  key={index}
+                >
 
-                  <div
-                    className="preview-card"
-                    key={index}
-                  >
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Preview ${index + 1}`}
+                  />
 
-                    <img
-                      src={URL.createObjectURL(image)}
-                      alt=""
-                    />
+                </div>
 
-                  </div>
+              )
+            )}
 
-                ))
+          </div>
 
-              }
+        )}
 
-            </div>
-
-          )
-
-        }
+        {/* ===============================
+            Submit Button
+        =============================== */}
 
         <button
           type="submit"
           className="save-btn"
+          disabled={loading}
         >
 
-          Save Gallery
+          {loading
+            ? "Uploading..."
+            : "Save Gallery"}
 
         </button>
 
       </form>
 
     </div>
-
   );
-
 };
 
 export default AddGallery;

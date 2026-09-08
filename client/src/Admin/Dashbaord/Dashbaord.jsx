@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import "./Dashboard.css";
+import { useNavigate } from "react-router-dom";
 
 import {
   FaUsers,
@@ -8,11 +10,125 @@ import {
   FaArrowUp,
 } from "react-icons/fa";
 
+import axios from "axios";
+
+const API_URL = "http://localhost:5000/api";
+
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState({
+    volunteers: 0,
+    programs: 0,
+    gallery: 0,
+    events: 0,
+  });
+
+  const [loading, setLoading] = useState(true);
+
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+
+  const [recentPrograms, setRecentPrograms] = useState([]);
+
+  // =====================================
+  // Fetch Dashboard Data
+  // =====================================
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // APIs parallel me call hongi
+      const [
+        programsResponse,
+        galleryResponse,
+        eventsResponse,
+      ] = await Promise.all([
+        axios.get(`${API_URL}/programs`, config),
+        axios.get(`${API_URL}/gallery`, config),
+        axios.get(`${API_URL}/events`, config),
+      ]);
+
+      // =====================================
+      // Programs Data
+      // =====================================
+
+      const programs =
+        programsResponse.data.programs ||
+        programsResponse.data.program ||
+        [];
+
+      // =====================================
+      // Gallery Data
+      // =====================================
+
+      const gallery =
+        galleryResponse.data.galleryImages ||
+        galleryResponse.data.gallery ||
+        [];
+
+      // =====================================
+      // Events Data
+      // =====================================
+
+      const events =
+        eventsResponse.data.events ||
+        eventsResponse.data.event ||
+        [];
+
+      // =====================================
+      // Set Counts
+      // =====================================
+
+      setDashboardData({
+        volunteers: 0,
+        programs: programs.length,
+        gallery: gallery.length,
+        events: events.length,
+      });
+
+      // Recent Programs
+      setRecentPrograms(programs.slice(0, 3));
+
+      // Upcoming Events
+      setUpcomingEvents(events.slice(0, 3));
+
+    } catch (error) {
+      console.error(
+        "Dashboard Data Error:",
+        error.response?.data || error.message
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =====================================
+  // Fetch Data On Page Load
+  // =====================================
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+    const handleQuickAction = (path) => {
+    navigate(path);
+  };
+
+
   return (
     <div className="dashboard-page">
 
-      {/* Heading */}
+      {/* =====================================
+          Heading
+      ===================================== */}
 
       <div className="dashboard-header">
 
@@ -28,9 +144,13 @@ const Dashboard = () => {
 
       </div>
 
-      {/* Statistics */}
+      {/* =====================================
+          Statistics Cards
+      ===================================== */}
 
       <div className="stats-grid">
+
+        {/* Volunteers */}
 
         <div className="stats-card">
 
@@ -42,7 +162,11 @@ const Dashboard = () => {
 
           <div>
 
-            <h2>1,250</h2>
+            <h2>
+              {loading
+                ? "..."
+                : dashboardData.volunteers}
+            </h2>
 
             <p>Total Volunteers</p>
 
@@ -50,13 +174,15 @@ const Dashboard = () => {
 
               <FaArrowUp />
 
-              +12% This Month
+              Community Members
 
             </span>
 
           </div>
 
         </div>
+
+        {/* Programs */}
 
         <div className="stats-card">
 
@@ -68,7 +194,11 @@ const Dashboard = () => {
 
           <div>
 
-            <h2>42</h2>
+            <h2>
+              {loading
+                ? "..."
+                : dashboardData.programs}
+            </h2>
 
             <p>Total Programs</p>
 
@@ -76,13 +206,15 @@ const Dashboard = () => {
 
               <FaArrowUp />
 
-              +4 New
+              Live Data
 
             </span>
 
           </div>
 
         </div>
+
+        {/* Gallery */}
 
         <div className="stats-card">
 
@@ -94,7 +226,11 @@ const Dashboard = () => {
 
           <div>
 
-            <h2>350</h2>
+            <h2>
+              {loading
+                ? "..."
+                : dashboardData.gallery}
+            </h2>
 
             <p>Gallery Images</p>
 
@@ -102,13 +238,15 @@ const Dashboard = () => {
 
               <FaArrowUp />
 
-              +25 Uploaded
+              Uploaded Images
 
             </span>
 
           </div>
 
         </div>
+
+        {/* Events */}
 
         <div className="stats-card">
 
@@ -120,15 +258,19 @@ const Dashboard = () => {
 
           <div>
 
-            <h2>18</h2>
+            <h2>
+              {loading
+                ? "..."
+                : dashboardData.events}
+            </h2>
 
-            <p>Upcoming Events</p>
+            <p>Total Events</p>
 
             <span>
 
               <FaArrowUp />
 
-              +2 Scheduled
+              Scheduled Events
 
             </span>
 
@@ -137,7 +279,10 @@ const Dashboard = () => {
         </div>
 
       </div>
-            {/* Dashboard Content */}
+
+      {/* =====================================
+          Dashboard Content
+      ===================================== */}
 
       <div className="dashboard-grid">
 
@@ -149,7 +294,9 @@ const Dashboard = () => {
 
             <h3>Donation Overview</h3>
 
-            <button>View Report</button>
+            <button>
+              View Report
+            </button>
 
           </div>
 
@@ -157,9 +304,13 @@ const Dashboard = () => {
 
             <div className="chart-placeholder">
 
-              <h2>₹ 8,45,000</h2>
+              <h2>
+                ₹ 8,45,000
+              </h2>
 
-              <span>Total Donations</span>
+              <span>
+                Total Donations
+              </span>
 
             </div>
 
@@ -173,71 +324,76 @@ const Dashboard = () => {
 
           <div className="card-header">
 
-            <h3>Upcoming Events</h3>
+            <h3>
+              Upcoming Events
+            </h3>
 
           </div>
 
           <div className="event-list">
 
-            <div className="event-item">
+            {loading ? (
 
-              <div className="event-date">
+              <p>
+                Loading events...
+              </p>
 
-                <h4>15</h4>
+            ) : upcomingEvents.length === 0 ? (
 
-                <span>Jul</span>
+              <p>
+                No upcoming events found.
+              </p>
 
-              </div>
+            ) : (
 
-              <div>
+              upcomingEvents.map((event) => (
 
-                <h5>Education Camp</h5>
+                <div
+                  className="event-item"
+                  key={event._id}
+                >
 
-                <p>Indore, Madhya Pradesh</p>
+                  <div className="event-date">
 
-              </div>
+                    <h4>
+                      {event.date
+                        ? new Date(event.date).getDate()
+                        : "--"}
+                    </h4>
 
-            </div>
+                    <span>
+                      {event.date
+                        ? new Date(event.date)
+                            .toLocaleString(
+                              "en-US",
+                              {
+                                month: "short",
+                              }
+                            )
+                        : "---"}
+                    </span>
 
-            <div className="event-item">
+                  </div>
 
-              <div className="event-date">
+                  <div>
 
-                <h4>22</h4>
+                    <h5>
+                      {event.title}
+                    </h5>
 
-                <span>Jul</span>
+                    <p>
+                      {event.location ||
+                        event.venue ||
+                        "Location not available"}
+                    </p>
 
-              </div>
+                  </div>
 
-              <div>
+                </div>
 
-                <h5>Blood Donation Camp</h5>
+              ))
 
-                <p>Bhopal</p>
-
-              </div>
-
-            </div>
-
-            <div className="event-item">
-
-              <div className="event-date">
-
-                <h4>30</h4>
-
-                <span>Jul</span>
-
-              </div>
-
-              <div>
-
-                <h5>Tree Plantation</h5>
-
-                <p>Ujjain</p>
-
-              </div>
-
-            </div>
+            )}
 
           </div>
 
@@ -245,7 +401,9 @@ const Dashboard = () => {
 
       </div>
 
-      {/* Bottom Grid */}
+      {/* =====================================
+          Bottom Grid
+      ===================================== */}
 
       <div className="dashboard-grid">
 
@@ -255,90 +413,111 @@ const Dashboard = () => {
 
           <div className="card-header">
 
-            <h3>Recent Programs</h3>
+            <h3>
+              Recent Programs
+            </h3>
 
           </div>
 
-          <table className="dashboard-table">
+          {loading ? (
 
-            <thead>
+            <p>
+              Loading programs...
+            </p>
 
-              <tr>
+          ) : recentPrograms.length === 0 ? (
 
-                <th>Program</th>
+            <p>
+              No programs found.
+            </p>
 
-                <th>Status</th>
+          ) : (
 
-                <th>Date</th>
+            <table className="dashboard-table">
 
-              </tr>
+              <thead>
 
-            </thead>
+                <tr>
 
-            <tbody>
+                  <th>
+                    Program
+                  </th>
 
-              <tr>
+                  <th>
+                    Status
+                  </th>
 
-                <td>Women Empowerment</td>
+                  <th>
+                    Date
+                  </th>
 
-                <td>
+                </tr>
 
-                  <span className="status active">
+              </thead>
 
-                    Active
+              <tbody>
 
-                  </span>
+                {recentPrograms.map(
+                  (program) => (
 
-                </td>
+                    <tr
+                      key={program._id}
+                    >
 
-                <td>12 Jul</td>
+                      <td>
+                        {program.title}
+                      </td>
 
-              </tr>
+                      <td>
 
-              <tr>
+                        <span
+                          className={`status ${
+                            program.status ===
+                            "Completed"
+                              ? "completed"
+                              : "active"
+                          }`}
+                        >
 
-                <td>Education Drive</td>
+                          {program.status ||
+                            "Active"}
 
-                <td>
+                        </span>
 
-                  <span className="status active">
+                      </td>
 
-                    Active
+                      <td>
 
-                  </span>
+                        {program.createdAt
+                          ? new Date(
+                              program.createdAt
+                            ).toLocaleDateString(
+                              "en-IN",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                              }
+                            )
+                          : "--"}
 
-                </td>
+                      </td>
 
-                <td>18 Jul</td>
+                    </tr>
 
-              </tr>
+                  )
+                )}
 
-              <tr>
+              </tbody>
 
-                <td>Health Awareness</td>
+            </table>
 
-                <td>
-
-                  <span className="status completed">
-
-                    Completed
-
-                  </span>
-
-                </td>
-
-                <td>03 Jul</td>
-
-              </tr>
-
-            </tbody>
-
-          </table>
+          )}
 
         </div>
 
         {/* Quick Actions */}
 
+       
         <div className="dashboard-card">
 
           <div className="card-header">
@@ -349,13 +528,45 @@ const Dashboard = () => {
 
           <div className="quick-actions">
 
-            <button>Add Program</button>
+            <button
+              onClick={() =>
+                handleQuickAction(
+                  "/admin/programs/add"
+                )
+              }
+            >
+              Add Program
+            </button>
 
-            <button>Add Event</button>
+            <button
+              onClick={() =>
+                handleQuickAction(
+                  "/admin/events/add"
+                )
+              }
+            >
+              Add Event
+            </button>
 
-            <button>Upload Gallery</button>
+            <button
+              onClick={() =>
+                handleQuickAction(
+                  "/admin/gallery/add"
+                )
+              }
+            >
+              Upload Gallery
+            </button>
 
-            <button>View Donations</button>
+            <button
+              onClick={() =>
+                handleQuickAction(
+                  "/admin/donations"
+                )
+              }
+            >
+              View Donations
+            </button>
 
           </div>
 
@@ -364,9 +575,7 @@ const Dashboard = () => {
       </div>
 
     </div>
-
   );
-
 };
 
 export default Dashboard;

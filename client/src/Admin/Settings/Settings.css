@@ -1,0 +1,106 @@
+.settings-page {
+  padding: 40px;
+}
+
+.settings-header {
+  margin-bottom: 30px;
+}
+
+.settings-header h2 {
+  font-size: 32px;
+  color: #1f5f2b;
+  margin-bottom: 8px;
+}
+
+.settings-header p {
+  color: #777;
+  font-size: 16px;
+}
+
+.password-card {
+  max-width: 700px;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.password-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.password-icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 14px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.password-card-header h3 {
+  margin: 0 0 5px;
+  font-size: 22px;
+}
+
+.password-card-header p {
+  margin: 0;
+  color: #777;
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.password-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.password-field label {
+  font-weight: 600;
+  color: #333;
+}
+
+.password-field input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+}
+
+.password-field input:focus {
+  border-color: #2e7d32;
+}
+
+.change-password-btn {
+  width: fit-content;
+  padding: 13px 25px;
+  border: none;
+  border-radius: 8px;
+  background: #2e7d32;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.change-password-btn:hover {
+  background: #256428;
+}
+
+.change-password-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

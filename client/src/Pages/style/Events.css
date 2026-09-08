@@ -1,9 +1,9 @@
 /* --- VARIABLES --- */
 :root {
-  --primary-color:var(--primary);      /* NGO Dark Green Theme */
+  --primary-color:var(--primary);      
   --primary-hover: var(--primary-hover);
-  --accent-color: #e58e26;       /* Warm Orange for Upcoming Badges */
-  --past-color: #7f8c8d;         /* Grey for Past Events */
+  --accent-color: #e58e26;      
+  --past-color: #7f8c8d;         
   --bg-light: #f9fbf9;
   --card-bg: #ffffff;
   --text-dark: #222222;
@@ -54,7 +54,7 @@
   opacity: 0.85;
 }
 
-.events-crumb-home { opacity: 0.7; }
+.events-crumb-home {font-weight: 600;  color: white;}
 .events-crumb-current { font-weight: 600; }
 
 /* --- TABS (FILTER BAR) --- */
@@ -250,25 +250,225 @@
 
 
 /* --- MOBILE LAYOUT MODIFICATIONS --- */
-@media (max-width: 576px) {
-  .events-tabs {
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
-  }
-  
-  .tab-btn {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-  }
-  
-  .events-grid {
-    grid-template-columns: 1fr; /* Strict 1 Column layout on phone screen */
-    gap: 20px;
-  }
+/* ===============================
+   1200px
+==================================*/
+@media (max-width:1200px){
 
-  .event-content {
-    padding: 18px;
-  }
+.events-content-container{
+    max-width:100%;
+    padding:50px 30px;
+}
+
+.events-grid{
+    grid-template-columns:repeat(2,minmax(320px,1fr));
+    gap:25px;
+}
+
+.event-title{
+    font-size:1.2rem;
+}
+
+}
+
+
+/* ===============================
+   1024px
+==================================*/
+@media (max-width:1024px){
+
+.events-banner{
+    padding:70px 20px;
+}
+
+.events-content-container{
+    padding:45px 20px;
+}
+
+.events-tabs{
+    gap:12px;
+    margin-bottom:35px;
+}
+
+.tab-btn{
+    padding:12px 18px;
+    font-size:15px;
+}
+
+.events-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:22px;
+}
+
+.event-contents{
+    padding:20px;
+}
+
+.event-title{
+    font-size:1.15rem;
+}
+
+.event-meta{
+    gap:10px;
+    font-size:.85rem;
+}
+
+.event-excerpt{
+    font-size:.9rem;
+}
+
+}
+
+
+/* ===============================
+   768px
+==================================*/
+@media (max-width:768px){
+
+.events-banner{
+    padding:60px 15px;
+}
+
+.events-banner h1{
+    font-size:2rem;
+}
+
+.events-tabs{
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+}
+
+.tab-btn{
+    width:100%;
+    max-width:350px;
+}
+
+.events-grid{
+    grid-template-columns:1fr;
+    gap:25px;
+}
+
+.event-contents{
+    padding:20px;
+}
+
+.event-title{
+    font-size:1.2rem;
+}
+
+.event-meta{
+    flex-direction:column;
+    gap:8px;
+}
+
+.event-bt{
+    width:100%;
+}
+
+}
+
+
+/* ===============================
+   576px
+==================================*/
+@media (max-width:576px){
+
+.events-content-container{
+    padding:35px 15px;
+}
+
+.events-banner{
+    padding:50px 15px;
+}
+
+.events-banner h1{
+    font-size:1.8rem;
+}
+
+.events-breadcrumb{
+    font-size:.85rem;
+}
+
+.events-tabs{
+    width:100%;
+}
+
+.tab-btn{
+    width:100%;
+    padding:12px;
+    font-size:15px;
+}
+
+.events-grid{
+    grid-template-columns:1fr;
+    gap:20px;
+}
+
+.event-date-badge{
+    min-width:48px;
+    padding:6px;
+}
+
+.badge-day{
+    font-size:1.1rem;
+}
+
+.badge-month{
+    font-size:.7rem;
+}
+
+.event-contents{
+    padding:18px;
+}
+
+.event-title{
+    font-size:1.1rem;
+}
+
+.event-meta{
+    font-size:.82rem;
+}
+
+.event-excerpt{
+    font-size:.88rem;
+    -webkit-line-clamp:4;
+}
+
+.event-bt{
+    padding:11px;
+    font-size:.9rem;
+}
+
+}
+
+
+/* ===============================
+   400px
+==================================*/
+@media (max-width:400px){
+
+.events-banner h1{
+    font-size:1.6rem;
+}
+
+.event-title{
+    font-size:1rem;
+}
+
+.event-contents{
+    padding:15px;
+}
+
+.event-date-badge{
+    top:10px;
+    left:10px;
+}
+
+.past-tag{
+    top:10px;
+    right:10px;
+    font-size:.7rem;
+}
+
 }

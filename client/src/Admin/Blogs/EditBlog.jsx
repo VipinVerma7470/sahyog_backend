@@ -1,135 +1,339 @@
-import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import "./Blog.css";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 
-const blogData = [
-  {
-    id: 1,
-    title: "Education Changes Lives",
-    category: "Education",
-    author: "Admin",
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0?w=800",
-    shortDescription:
-      "Education is the most powerful weapon to change the world.",
-    description:
-      "This is a sample blog description. Replace it with data coming from your backend.",
-  },
-];
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+
+import "./Blog.css";
+import axios from "axios";
 
 const EditBlog = () => {
-
   const { id } = useParams();
 
-  const existingBlog =
-    blogData.find((item) => item.id === Number(id)) || {};
+  const navigate = useNavigate();
 
-  const [blog, setBlog] = useState(existingBlog);
+  const [blog, setBlog] = useState({
+    title: "",
+    category: "",
+    author: "",
+    content: "",
+  });
+
+  const [currentImage, setCurrentImage] =
+    useState("");
+
+  const [newImage, setNewImage] =
+    useState(null);
+
+  const [imagePreview, setImagePreview] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [updating, setUpdating] =
+    useState(false);
+
+  // ===============================
+  // Fetch Blog By ID
+  // ===============================
+
+  const fetchBlog = async () => {
+    try {
+      setLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get(
+        `http://localhost:5000/api/blogs/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const blogData =
+        response.data.blog;
+
+      setBlog({
+        title: blogData.title || "",
+        category:
+          blogData.category || "",
+        author:
+          blogData.author || "",
+        content:
+          blogData.content || "",
+      });
+
+      setCurrentImage(
+        blogData.image || ""
+      );
+
+    } catch (error) {
+      console.error(
+        "Fetch Blog Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to fetch blog"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlog();
+  }, [id]);
+
+  // ===============================
+  // Handle Text Change
+  // ===============================
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
 
-    setBlog({
-      ...blog,
-      [e.target.name]: e.target.value,
-    });
-
+    setBlog((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  // ===============================
+  // Handle New Image
+  // ===============================
 
   const handleImage = (e) => {
+    const file = e.target.files[0];
 
-    setBlog({
-      ...blog,
-      image: URL.createObjectURL(e.target.files[0]),
-    });
+    if (file) {
+      setNewImage(file);
 
+      setImagePreview(
+        URL.createObjectURL(file)
+      );
+    }
   };
 
-  const handleSubmit = (e) => {
+  // ===============================
+  // Update Blog
+  // ===============================
 
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    alert("Blog Updated Successfully");
+    try {
+      setUpdating(true);
 
-    console.log(blog);
+      const formData = new FormData();
 
+      formData.append(
+        "title",
+        blog.title
+      );
+
+      formData.append(
+        "category",
+        blog.category
+      );
+
+      formData.append(
+        "author",
+        blog.author
+      );
+
+      formData.append(
+        "content",
+        blog.content
+      );
+
+      // Only send new image
+      // if selected
+      if (newImage) {
+        formData.append(
+          "image",
+          newImage
+        );
+      }
+
+      const token = localStorage.getItem("token");
+
+      const response = await axios.put(
+        `http://localhost:5000/api/blogs/${id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert(response.data.message);
+
+      navigate("/admin/blogs");
+
+    } catch (error) {
+      console.error(
+        "Update Blog Error:",
+        error
+      );
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to update blog"
+      );
+    } finally {
+      setUpdating(false);
+    }
   };
 
-  return (
+  // ===============================
+  // Loading
+  // ===============================
 
+  if (loading) {
+    return (
+      <div className="blog-form-page">
+
+        <p>
+          Loading blog...
+        </p>
+
+      </div>
+    );
+  }
+
+  return (
     <div className="blog-form-page">
+
+      {/* Header */}
 
       <div className="form-header">
 
         <div>
 
-          <h2>Edit Blog</h2>
+          <h2>
+            Edit Blog
+          </h2>
 
-          <p>Update blog information.</p>
+          <p>
+            Update blog information.
+          </p>
 
         </div>
 
-        <Link to="/admin/blogs" className="back-btn">
+        <Link
+          to="/admin/blogs"
+          className="back-btn"
+        >
           Back
         </Link>
 
       </div>
 
-      <form className="blog-form" onSubmit={handleSubmit}>
+      {/* Form */}
+
+      <form
+        className="blog-form"
+        onSubmit={handleSubmit}
+      >
 
         <div className="form-grid">
 
+          {/* Title */}
+
           <div className="form-group">
 
-            <label>Blog Title</label>
+            <label>
+              Blog Title
+            </label>
 
             <input
               type="text"
               name="title"
-              value={blog.title || ""}
+              value={blog.title}
               onChange={handleChange}
+              required
             />
 
           </div>
 
+          {/* Category */}
+
           <div className="form-group">
 
-            <label>Category</label>
+            <label>
+              Category
+            </label>
 
             <select
               name="category"
-              value={blog.category || ""}
+              value={blog.category}
               onChange={handleChange}
+              required
             >
 
-              <option>Education</option>
+              <option value="">
+                Select Category
+              </option>
 
-              <option>Health</option>
+              <option value="Education">
+                Education
+              </option>
 
-              <option>Environment</option>
+              <option value="Health">
+                Health
+              </option>
 
-              <option>Women Empowerment</option>
+              <option value="Environment">
+                Environment
+              </option>
 
-              <option>Social Work</option>
+              <option value="Women Empowerment">
+                Women Empowerment
+              </option>
+
+              <option value="Social Work">
+                Social Work
+              </option>
 
             </select>
 
           </div>
 
+          {/* Author */}
+
           <div className="form-group">
 
-            <label>Author</label>
+            <label>
+              Author
+            </label>
 
             <input
               type="text"
               name="author"
-              value={blog.author || ""}
+              value={blog.author}
               onChange={handleChange}
+              required
             />
 
           </div>
 
+          {/* Change Image */}
+
           <div className="form-group">
 
-            <label>Change Image</label>
+            <label>
+              Change Image
+            </label>
 
             <input
               type="file"
@@ -141,52 +345,52 @@ const EditBlog = () => {
 
         </div>
 
-        {blog.image && (
+        {/* Image Preview */}
 
-          <div className="image-preview">
+        <div className="image-preview">
 
-            <img
-              src={blog.image}
-              alt="Preview"
-            />
-
-          </div>
-
-        )}
-
-        <div className="form-group">
-
-          <label>Short Description</label>
-
-          <textarea
-            rows="3"
-            name="shortDescription"
-            value={blog.shortDescription || ""}
-            onChange={handleChange}
+          <img
+            src={
+              imagePreview ||
+              currentImage
+            }
+            alt="Blog"
           />
 
         </div>
 
+        {/* Content */}
+
         <div className="form-group">
 
-          <label>Full Description</label>
+          <label>
+            Full Blog Content
+          </label>
 
           <textarea
-            rows="8"
-            name="description"
-            value={blog.description || ""}
+            rows="10"
+            name="content"
+            value={blog.content}
             onChange={handleChange}
+            required
           />
 
         </div>
+
+        {/* Buttons */}
 
         <div className="form-buttons">
 
           <button
             type="submit"
             className="save-btn"
+            disabled={updating}
           >
-            Update Blog
+
+            {updating
+              ? "Updating..."
+              : "Update Blog"}
+
           </button>
 
           <Link
@@ -201,9 +405,7 @@ const EditBlog = () => {
       </form>
 
     </div>
-
   );
-
 };
 
 export default EditBlog;

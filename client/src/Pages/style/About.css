@@ -505,130 +505,289 @@ Mission
 .story-item:hover svg{
     color:#1B5E20;
 }
+#homenavi{
+    color: white;
+    font-weight: 600;
+}
+#arrow{
+   color: white;
+    font-weight: 600;  
+}
+.container p{
+    font-weight: 600;
+}
 
 /* ==================================
-   Responsive Media Queries Breakdown
+TABLET
 ================================== */
+@media (max-width:992px){
 
-@media(max-width:992px){
-  .story-wrapper{
-      grid-template-columns:1fr;
-  }
-  .story-right{
-      order:-1;
-  }
-  .story-right img{
-      height:420px;
-  }
-  .achievements-grid {
-      grid-template-columns: repeat(2, 1fr);
-  }
-  .mission-wrapper{
-      grid-template-columns:1fr;
-  }
-  .mission-box::after{
-      display:none;
-  }
-  .director-wrapper{
-      flex-direction:column-reverse;
-      text-align:center;
-  }
-  .point{
-      justify-content:center;
-  }
-  .director-content h2{
-      font-size:32px;
-  }
-  .journey-line{
-      flex-wrap:wrap;
-      justify-content:center;
-  }
-  .journey-line::before{
-      display:none;
-  }
-  .journey-item{
-      width:45%;
-      margin-bottom:45px;
-  }
+.story-wrapper{
+    grid-template-columns:1fr;
+    gap:40px;
 }
 
-@media(max-width:768px){
-  .about-banner{
-      height:170px;
-  }
-  .about-overlay h1{
-      font-size:34px;
-  }
-  .story-section{
-      padding:55px 0;
-  }
-  .story-left h2{
-      font-size:30px;
-  }
-  .story-right img{
-      height:300px;
-  }
-  .achievements-header h2 {
-      font-size: 28px;
-  }
-  .mission-wrapper{
-      padding:25px;
-      gap:30px;
-  }
-  .mission-box h3{
-      font-size:22px;
-  }
-  .journey-title{
-      font-size:30px;
-  }
-  .journey-item{
-      width:100%;
-  }
+.story-right{
+    order:-1;
 }
 
-@media(max-width:576px){
-  .container{
-      width:92%;
-  }
-  .about-banner{
-      width:94%;
-      margin:15px auto;
-      border-radius:14px;
-  }
-  .about-overlay h1{
-      font-size:28px;
-  }
-  .about-overlay p{
-      font-size:13px;
-  }
-  .story-left h2{
-      font-size:26px;
-  }
-  .story-left p{
-      font-size:14px;
-  }
-  .story-item{
-      font-size:14px;
-  }
-  .story-right img{
-      height:240px;
-  }
-  .achievements-grid {
-      grid-template-columns: 1fr;
-  }
-  .mission-box h3{
-      font-size:20px;
-  }
-  .mission-box p{
-      font-size:14px;
-  }
-  .journey-title{
-      font-size:26px;
-  }
-  .journey-year{
-      font-size:22px;
-  }
-  .journey-item h4{
-      font-size:18px;
-  }
+.story-right img{
+    height:380px;
+}
+
+.achievements-grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.achievement-card{
+    padding:25px 18px;
+}
+
+.achievements-img-wrapper{
+    width:100%;
+    max-width:220px;
+    height:180px;
+}
+
+.director-wrapper{
+    flex-direction:column-reverse;
+    gap:40px;
+    text-align:center;
+}
+
+.director-content{
+    width:100%;
+}
+
+.director-image{
+    width:100%;
+}
+
+.director-image img{
+    max-width:380px;
+}
+
+.point{
+    justify-content:left;
+}
+
+.mission-wrapper{
+    grid-template-columns:1fr;
+    gap:25px;
+}
+
+.mission-box:not(:last-child)::after{
+    display:none;
+}
+
+.journey-line{
+    flex-wrap:wrap;
+}
+
+.journey-line::before{
+    display:none;
+}
+
+.journey-item{
+    width:45%;
+    margin-bottom:40px;
+}
+
+}
+
+
+/* ==================================
+MOBILE
+================================== */
+@media (max-width:768px){
+
+.about-banner{
+    height:220px;
+}
+
+.about-overlay h1{
+    font-size:32px;
+}
+
+.story-section{
+    padding:50px 0;
+}
+
+.story-left h2{
+    font-size:28px;
+}
+
+.story-left p{
+    font-size:15px;
+}
+
+.story-right img{
+    height:280px;
+}
+
+.achievements-header h2{
+    font-size:28px;
+}
+
+.achievements-grid{
+    grid-template-columns:1fr;
+}
+
+.achievement-card{
+    padding:22px;
+}
+
+.achievements-img-wrapper{
+    width:100%;
+    max-width:280px;
+    height:190px;
+}
+
+.achievement-count{
+    font-size:28px;
+}
+
+.director-section{
+    padding:60px 0;
+}
+
+.director-content h2{
+    font-size:30px;
+}
+
+.director-content h4{
+    font-size:22px;
+}
+
+.director-image img{
+    max-width:320px;
+}
+
+.mission-wrapper{
+    padding:25px;
+}
+
+.mission-box h3{
+    font-size:22px;
+}
+
+.journey-title{
+    font-size:30px;
+}
+
+.journey-item{
+    width:100%;
+}
+
+}
+
+
+/* ==================================
+SMALL MOBILE
+================================== */
+@media (max-width:576px){
+
+.container{
+    width:92%;
+}
+
+.about-banner{
+    height:180px;
+}
+
+.about-overlay h1{
+    font-size:28px;
+}
+
+.about-overlay p{
+    font-size:13px;
+}
+
+.story-left h2{
+    font-size:24px;
+}
+
+.story-left p{
+    font-size:14px;
+}
+
+.story-item{
+    font-size:14px;
+}
+
+.story-right img{
+    height:220px;
+}
+
+.achievement-card{
+    padding:18px;
+}
+
+.achievements-img-wrapper{
+    width:100%;
+    max-width:100%;
+    height:190px;
+}
+
+.achievement-count{
+    font-size:24px;
+}
+
+.achievement-title{
+    font-size:17px;
+}
+
+.achievement-desc{
+    font-size:14px;
+}
+
+.director-content h2{
+    font-size:26px;
+}
+
+.director-content h4{
+    font-size:20px;
+}
+
+.director-designation{
+    font-size:14px;
+}
+
+.director-content p{
+    font-size:14px;
+}
+
+.director-image img{
+    max-width:260px;
+}
+
+.mission-wrapper{
+    padding:20px;
+}
+
+.mission-box h3{
+    font-size:20px;
+}
+
+.mission-box p{
+    font-size:14px;
+}
+
+.journey-title{
+    font-size:26px;
+}
+
+.journey-year{
+    font-size:22px;
+}
+
+.journey-item h4{
+    font-size:18px;
+}
+
+.journey-item p{
+    width:100%;
+}
+
 }
