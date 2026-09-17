@@ -108,12 +108,12 @@ const Sidebar = () => {
             </NavLink>
           </li>
 
-          <li>
+          {/* <li>
             <NavLink to="/admin/settings">
               <FaCog />
               <span>Settings</span>
             </NavLink>
-          </li>
+          </li> */}
         </ul>
       </nav>
 

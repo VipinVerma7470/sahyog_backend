@@ -43,13 +43,14 @@ import ContactList from "./Admin/Contact/ContactList";
 import ContactDetails from "./Admin/Contact/ContactDetails";
 
 import Settings from "./Admin/Settings/Settings";
-
+import { Toaster } from "react-hot-toast";
 import Login from "./Admin/Login/Login";
 import ProtectedRoute from "./Admin/Login/ProtectedRoute";
 
 function App() {
   return (
     <>
+     <Toaster position="top-right" />
       <ScrollToTop />
 
       <Routes>

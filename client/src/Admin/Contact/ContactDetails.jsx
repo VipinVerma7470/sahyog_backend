@@ -17,27 +17,50 @@ const ContactDetails = () => {
 
   const fetchContact = async () => {
 
-    try {
+  try {
 
-      const response =
-        await contactService.getById(id);
+    const response =
+      await contactService.getById(id);
 
-      setContact(response.contact);
+    setContact(response.contact);
 
-    } catch (error) {
+    // Mark as READ when admin opens the message
+   if (
+  String(response.contact.status || "").toLowerCase() === "unread"
+) {
+  // console.log("Updating contact status to READ:", id);
 
-      console.error(
-        "Fetch Contact Details Error:",
-        error
-      );
+  const statusResponse =
+    await contactService.updateStatus(
+      id,
+      "Read"
+    );
 
-    } finally {
+  // console.log(
+  //   "Status Update Response:",
+  //   statusResponse
+  // );
 
-      setLoading(false);
+  setContact((prev) => ({
+    ...prev,
+    status: "Read",
+  }));
+}
 
-    }
+  } catch (error) {
 
-  };
+    console.error(
+      "Fetch Contact Details Error:",
+      error
+    );
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+};
 
   useEffect(() => {
 

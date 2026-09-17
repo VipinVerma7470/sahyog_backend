@@ -8,7 +8,7 @@ import {
   FaEye,
   FaEyeSlash,
 } from "react-icons/fa";
-
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
@@ -70,9 +70,7 @@ const Login = () => {
      localStorage.setItem("token", token);
 localStorage.setItem("admin", JSON.stringify(admin));
 
-      alert(
-        response.data.message
-      );
+      toast.success(response.data.message || "Login successful!");
 
       navigate(
         "/admin"
@@ -83,10 +81,10 @@ localStorage.setItem("admin", JSON.stringify(admin));
         error
       );
 
-      alert(
-        error.response?.data?.message ||
-          "Login failed"
-      );
+      toast.error(
+  error.response?.data?.message ||
+    "Login failed"
+);
     } finally {
       setLoading(false);
     }
@@ -213,7 +211,7 @@ localStorage.setItem("admin", JSON.stringify(admin));
 
           <div className="login-options">
 
-            <label className="remember-me">
+            {/* <label className="remember-me">
 
               <input
                 type="checkbox"
@@ -226,13 +224,13 @@ localStorage.setItem("admin", JSON.stringify(admin));
 
               Remember Me
 
-            </label>
+            </label> */}
 
-            <a
+            {/* <a
               href="/forgot-password"
             >
               Forgot Password?
-            </a>
+            </a> */}
 
           </div>
 
