@@ -35,6 +35,9 @@ import EventDetail from "./Pages/EventDetail";
 
 import ScrollToTop from "./ScrollToTop";
 
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
+import TermsConditions from "./Pages/TermsConditions";
+
 import BlogList from "./Admin/Blogs/BlogList";
 import AddBlog from "./Admin/Blogs/AddBlog";
 import EditBlog from "./Admin/Blogs/EditBlog";
@@ -145,6 +148,10 @@ function App() {
           <Route path="/gallery" element={<Gallery />} />
 
           <Route path="/donate" element={<Donate />} />
+
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+
+<Route path="/terms-conditions" element={<TermsConditions />} />
         </Route>
       </Routes>
     </>
