@@ -4,13 +4,13 @@ import Footer from "../components/Footer/Footer";
 
 const Layout = () => {
   return (
-    <>
+    <div style={{ paddingTop: "122px" }}>
       <Navbar />
 
       <Outlet />
 
       <Footer />
-    </>
+    </div>
   );
 };
 
