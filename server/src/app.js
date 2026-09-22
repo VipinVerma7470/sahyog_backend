@@ -8,7 +8,10 @@ import eventRoutes from "./routes/eventRoutes.js";
 import galleryRoutes from "./routes/galleryRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import connectDB from "./src/config/db.js";
 const app = express();
+
+connectDB();
 
 app.use(cors());
 app.use(express.json());
