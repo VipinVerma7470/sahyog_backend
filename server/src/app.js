@@ -8,7 +8,7 @@ import eventRoutes from "./routes/eventRoutes.js";
 import galleryRoutes from "./routes/galleryRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
-import connectDB from "./src/config/db.js";
+import connectDB from "./config/db.js";
 const app = express();
 
 
