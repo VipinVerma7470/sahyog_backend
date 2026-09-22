@@ -11,13 +11,21 @@ import contactRoutes from "./routes/contactRoutes.js";
 import connectDB from "./src/config/db.js";
 const app = express();
 
-connectDB();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(morgan("dev"));
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.use(
   "/api/contact",
